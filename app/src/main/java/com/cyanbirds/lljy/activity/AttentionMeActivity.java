@@ -1,0 +1,184 @@
+package com.cyanbirds.lljy.activity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.cyanbirds.lljy.R;
+import com.cyanbirds.lljy.activity.base.BaseActivity;
+import com.cyanbirds.lljy.adapter.AttentionMeAdapter;
+import com.cyanbirds.lljy.config.ValueKey;
+import com.cyanbirds.lljy.entity.FollowModel;
+import com.cyanbirds.lljy.eventtype.HandleEvent;
+import com.cyanbirds.lljy.manager.AppManager;
+import com.cyanbirds.lljy.net.request.FollowListRequest;
+import com.cyanbirds.lljy.ui.widget.CircularProgress;
+import com.cyanbirds.lljy.ui.widget.DividerItemDecoration;
+import com.cyanbirds.lljy.utils.DensityUtil;
+import com.umeng.analytics.MobclickAgent;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author Cloudsoar(wangyb)
+ * @datetime 2016-01-13 22:17 GMT+8
+ * @email 395044952@qq.com
+ * 自己被别的用户关注
+ */
+public class AttentionMeActivity extends BaseActivity {
+    private RecyclerView mRecyclerView;
+    private CircularProgress mCircularProgress;
+    private TextView mNoUserinfo;
+    private AttentionMeAdapter mAdapter;
+    private List<FollowModel> mFollowModels;
+    private LinearLayoutManager layoutManager;
+    private int pageNo = 1;
+    private int pageSize = 13;
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_attention_me);
+        Toolbar toolbar = getActionBarToolbar();
+        if (toolbar != null) {
+            toolbar.setNavigationIcon(R.mipmap.ic_up);
+        }
+        setupView();
+        setupEvent();
+        setupData();
+    }
+    
+    private void setupView(){
+        mCircularProgress = (CircularProgress) findViewById(R.id.progress_bar);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+        mNoUserinfo = (TextView) findViewById(R.id.info);
+        layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayout.VERTICAL);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(
+                this, LinearLayoutManager.VERTICAL, DensityUtil
+                .dip2px(this, 12), DensityUtil.dip2px(
+                this, 12)));
+    }
+    
+    private void setupEvent(){
+    }
+    
+    private void setupData(){
+        if (AppManager.getClientUser().is_vip) {
+            pageSize = 100;
+        }
+        mFollowModels = new ArrayList<>();
+        mAdapter = new AttentionMeAdapter(AttentionMeActivity.this);
+        mAdapter.setOnItemClickListener(mOnItemClickListener);
+        mRecyclerView.setAdapter(mAdapter);
+        mCircularProgress.setVisibility(View.VISIBLE);
+        mRecyclerView.addOnScrollListener(mOnScrollListener);
+        new FollowListTask().request("followFormeList", pageNo, pageSize);
+    }
+    
+    private AttentionMeAdapter.OnItemClickListener mOnItemClickListener = new AttentionMeAdapter.OnItemClickListener() {
+        @Override
+        public void onItemClick(View view, int position) {
+            FollowModel followModel = mFollowModels.get(position);
+            Intent intent = new Intent(AttentionMeActivity.this, PersonalInfoActivity.class);
+            intent.putExtra(ValueKey.USER_ID, String.valueOf(followModel.userId));
+            startActivity(intent);
+        }
+    };
+    
+    class FollowListTask extends FollowListRequest {
+        @Override
+        public void onPostExecute(List<FollowModel> followModels) {
+            mCircularProgress.setVisibility(View.GONE);
+            if(followModels != null && followModels.size() > 0){
+                if (AppManager.getClientUser().is_vip) {
+                    mFollowModels.addAll(followModels);
+                    mAdapter.setFollowModels(mFollowModels);
+                } else if (followModels.size() > 10){
+                    mAdapter.setIsShowFooter(true);
+                    List<String> urls = new ArrayList<>(3);
+                    urls.add(followModels.get(0).faceUrl);
+                    urls.add(followModels.get(1).faceUrl);
+                    urls.add(followModels.get(2).faceUrl);
+                    mAdapter.setFooterFaceUrls(urls);
+                    followModels.remove(0);
+                    followModels.remove(1);
+                    mFollowModels.addAll(followModels);
+                    mAdapter.setFollowModels(mFollowModels);
+                } else {
+                    mFollowModels.addAll(followModels);
+                    mAdapter.setFollowModels(mFollowModels);
+                }
+
+            } else {
+                mAdapter.setIsShowFooter(false);
+                mAdapter.setFollowModels(mFollowModels);
+            }
+            if (mFollowModels != null && mFollowModels.size() > 0) {
+                mNoUserinfo.setVisibility(View.GONE);
+            } else {
+                mNoUserinfo.setVisibility(View.VISIBLE);
+            }
+        }
+        
+        @Override
+        public void onErrorExecute(String error) {
+        }
+    }
+    
+    private RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
+        
+        private int lastVisibleItem;
+        
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+        }
+        
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+            if (newState == RecyclerView.SCROLL_STATE_IDLE
+                    && lastVisibleItem + 1 == mAdapter.getItemCount()
+                    && mAdapter.isShowFooter()) {
+                //加载更多
+                //请求数据
+                if (AppManager.getClientUser().is_vip) {
+                    new FollowListTask().request("followFormeList", ++pageNo, pageSize);
+                }
+            }
+        }
+    };
+    
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void loadMoreData(HandleEvent event) {
+        new FollowListTask().request("followFormeList", ++pageNo, pageSize);
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart(this.getClass().getName());
+        MobclickAgent.onResume(this);
+    }
+    
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(this.getClass().getName());
+        MobclickAgent.onPause(this);
+    }
+}

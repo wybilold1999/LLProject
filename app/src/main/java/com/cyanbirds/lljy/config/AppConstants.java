@@ -1,0 +1,73 @@
+package com.cyanbirds.lljy.config;
+
+import com.xiaomi.account.openauth.XiaomiOAuthConstants;
+
+/**
+ * 
+ * @ClassName:Constants
+ * @Description:定义全局常量
+ * @Author:wangyb
+ * @Date:2015年5月12日上午9:26:45
+ *
+ */
+public class AppConstants {
+	
+	public static final String BASE_URL = "http://120.76.54.8/LoveLoveServer/";
+//	public static final String BASE_URL = "http://192.168.1.101/LoveLoveServer/";
+
+	/**
+	 * 密码加密密匙
+	 */
+	public static final String SECURITY_KEY = "ABCD1234abcd5678";
+
+	/**
+	 *容联云IM
+	 */
+	public static final String YUNTONGXUN_ID = "8a216da856c131340156d6ea887f1466";
+	public static final String YUNTONGXUN_TOKEN = "56cc98f3e9129eeb5352cc5d58f4edd1";
+
+	/**
+	 * QQ登录的appid和appkey
+	 */
+	public static final String mAppid = "1105905375";
+
+	/**
+	 * 微信登录
+	 */
+	public static final String WEIXIN_ID = "wxa065778bb90b2539";
+
+	/**
+	 * 短信
+	 */
+	public static final String SMS_INIT_KEY = "1b9893e7826e8";
+	public static final String SMS_INIT_SECRET = "b8983cfb9427a43a596da003967a4077";
+
+	/**
+	 * 小米推送appid
+	 */
+	public static final String MI_PUSH_APP_ID = "2882303761517549557";
+	/**
+	 * 小米推送appkey
+	 */
+	public static final String MI_PUSH_APP_KEY = "5391754924557";
+
+	public static final String MI_ACCOUNT_REDIRECT_URI = "http://www.cyanbirds.cn";
+
+	public static final int[] MI_SCOPE = new int[]{XiaomiOAuthConstants.SCOPE_PROFILE, XiaomiOAuthConstants.SCOPE_OPEN_ID};
+
+	/**
+	 * 个推appid和appkey
+	 */
+	public static final String GETUI_PUSH_APP_ID = "fn4zeTabxU6Z7jbRgm0d19";
+	public static final String GETUI_PUSH_APP_KEY = "lhFmeD04jY7NEqOm6xW7E2";
+
+	/**
+	 * 阿里图片节点
+	 */
+	public static final String OSS_IMG_ENDPOINT = "http://real-love-server.img-cn-shenzhen.aliyuncs.com/";
+
+	public static final String WX_PAY_PLATFORM = "wxpay";
+
+	public static final String ALI_PAY_PLATFORM = "alipay";
+
+}
