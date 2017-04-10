@@ -211,6 +211,7 @@ public class LoginActivity extends BaseActivity {
     class UserLoginTask extends UserLoginRequest {
         @Override
         public void onPostExecute(ClientUser clientUser) {
+            hideSoftKeyboard();
             ProgressDialogUtils.getInstance(LoginActivity.this).dismiss();
             MobclickAgent.onProfileSignIn(String.valueOf(AppManager
                     .getClientUser().userId));

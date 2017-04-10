@@ -2,12 +2,13 @@ package com.cyanbirds.lljy.fragment;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.os.Build;
+import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -22,6 +23,21 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationListener;
+import com.amap.api.location.LocationManagerProxy;
+import com.amap.api.location.LocationProviderProxy;
+import com.amap.api.maps2d.AMap;
+import com.amap.api.maps2d.CameraUpdateFactory;
+import com.amap.api.maps2d.MapView;
+import com.amap.api.maps2d.UiSettings;
+import com.amap.api.maps2d.model.LatLng;
+import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.core.PoiItem;
+import com.amap.api.services.geocoder.GeocodeResult;
+import com.amap.api.services.geocoder.GeocodeSearch;
+import com.amap.api.services.geocoder.RegeocodeQuery;
+import com.amap.api.services.geocoder.RegeocodeResult;
 import com.cyanbirds.lljy.R;
 import com.cyanbirds.lljy.activity.MakeMoneyActivity;
 import com.cyanbirds.lljy.activity.MyGoldActivity;
@@ -32,20 +48,16 @@ import com.cyanbirds.lljy.entity.ClientUser;
 import com.cyanbirds.lljy.eventtype.UserEvent;
 import com.cyanbirds.lljy.manager.AppManager;
 import com.cyanbirds.lljy.net.request.UpdateGoldRequest;
+import com.cyanbirds.lljy.utils.PreferencesUtils;
 import com.cyanbirds.lljy.utils.StringUtil;
+import com.dl7.tag.TagLayout;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.umeng.analytics.MobclickAgent;
-import com.zhy.view.flowlayout.FlowLayout;
-import com.zhy.view.flowlayout.TagAdapter;
-import com.zhy.view.flowlayout.TagFlowLayout;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,13 +71,8 @@ import butterknife.OnClick;
  * @email: 395044952@qq.com
  * @description:
  */
-public class TabPersonalFragment extends Fragment {
-	@BindView(R.id.user_name)
-	TextView mUserName;
-	@BindView(R.id.sex_img)
-	ImageView mSexImg;
-	@BindView(R.id.age)
-	TextView mAge;
+public class TabPersonalFragment extends Fragment implements AMapLocationListener, Runnable, GeocodeSearch.OnGeocodeSearchListener,
+		AMap.OnMapScreenShotListener{
 	@BindView(R.id.occupation)
 	TextView mOccupation;
 	@BindView(R.id.colleage)
@@ -81,11 +88,11 @@ public class TabPersonalFragment extends Fragment {
 	@BindView(R.id.signature)
 	TextView mSignature;
 	@BindView(R.id.plable_flowlayout)
-	TagFlowLayout mPlableFlowlayout;
+	TagLayout mPlableFlowlayout;
 	@BindView(R.id.part_flowlayout)
-	TagFlowLayout mPartFlowlayout;
+	TagLayout mPartFlowlayout;
 	@BindView(R.id.intrest_flowlayout)
-	TagFlowLayout mIntrestFlowlayout;
+	TagLayout mIntrestFlowlayout;
 	@BindView(R.id.purpose)
 	TextView mPurpose;
 	@BindView(R.id.loveWhere)
@@ -156,6 +163,28 @@ public class TabPersonalFragment extends Fragment {
 	Button mCheckViewWechat;
 	@BindView(R.id.check_view_qq)
 	Button mCheckViewQq;
+	@BindView(R.id.map)
+	MapView mapView;
+	@BindView(R.id.address)
+	TextView mAdress;
+	@BindView(R.id.map_card)
+	CardView mMapCard;
+	@BindView(R.id.my_location)
+	TextView mMyLocation;
+
+	private AMap aMap;
+	private UiSettings mUiSettings;
+	private LocationManagerProxy aMapLocManager = null;
+	private AMapLocation aMapLocation;// 用于判断定位超时
+	private GeocodeSearch geocoderSearch;
+
+	private LatLonPoint mLatLonPoint;
+	private String mAddress;// 选中的地址
+	private double latitude;
+	private double longitude;
+
+	private Handler handler = new Handler();
+
 	private View rootView;
 
 	private ClientUser clientUser;
@@ -165,7 +194,7 @@ public class TabPersonalFragment extends Fragment {
 	private TabPersonalPhotosAdapter mAdapter;
 	private LinearLayoutManager layoutManager;
 	private LinearLayoutManager mGiftLayoutManager;
-	private Gson gson = new Gson();
+//	private Gson gson = new Gson();
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -174,10 +203,12 @@ public class TabPersonalFragment extends Fragment {
 			rootView = inflater.inflate(R.layout.tab_item_personal, null);
 			ButterKnife.bind(this, rootView);
 			EventBus.getDefault().register(this);
+			initMap();
 			setupViews();
 			setupEvent();
 			setupData();
 			setHasOptionsMenu(true);
+			mapView.onCreate(savedInstanceState);// 此方法必须重写
 		}
 		ViewGroup parent = (ViewGroup) rootView.getParent();
 		if (parent != null) {
@@ -185,6 +216,29 @@ public class TabPersonalFragment extends Fragment {
 		}
 		ButterKnife.bind(this, rootView);
 		return rootView;
+	}
+
+	/**
+	 * 初始化AMap对象
+	 */
+	private void initMap() {
+		if (aMap == null) {
+			aMap = mapView.getMap();
+			mUiSettings = aMap.getUiSettings();
+			mUiSettings.setZoomControlsEnabled(false);// 不显示缩放按钮
+			mUiSettings.setLogoPosition(-50);
+			mUiSettings.setZoomGesturesEnabled(false);
+			aMap.moveCamera(CameraUpdateFactory.zoomTo(16));// 设置缩放比例
+		}
+		// 地理编码
+		geocoderSearch = new GeocodeSearch(getActivity());
+		geocoderSearch.setOnGeocodeSearchListener(this);
+		// 定位
+		aMapLocManager = LocationManagerProxy.getInstance(getActivity());
+		aMapLocManager.setGpsEnable(false);
+		aMapLocManager.requestLocationData(LocationProviderProxy.AMapNetwork,
+				-1, 10, this);
+		handler.postDelayed(this, 12000);// 设置超过12秒还没有定位到就停止定位
 	}
 
 	private void setupEvent() {
@@ -208,12 +262,18 @@ public class TabPersonalFragment extends Fragment {
 		mVals = new ArrayList<>();
 		if (getArguments() != null) {
 			clientUser = (ClientUser) getArguments().getSerializable(ValueKey.ACCOUNT);
+			String lat = getArguments().getString(ValueKey.LATITUDE);
+			String lon = getArguments().getString(ValueKey.LONGITUDE);
+			if (!TextUtils.isEmpty(lat) && !TextUtils.isEmpty(lon)) {
+				latitude = Double.parseDouble(lat);
+				longitude = Double.parseDouble(lon);
+			}
 			if (clientUser != null) {
 				setUserInfo(clientUser);
 				/**
 				 * 用户的图片
 				 */
-				if (!TextUtils.isEmpty(clientUser.imgUrls)) {
+				/*if (!TextUtils.isEmpty(clientUser.imgUrls)) {
 					Type listType = new TypeToken<ArrayList<String>>() {
 					}.getType();
 					List<String> urls = gson.fromJson(clientUser.imgUrls, listType);
@@ -228,7 +288,7 @@ public class TabPersonalFragment extends Fragment {
 					}
 				} else {
 					mPhotoCard.setVisibility(View.GONE);
-				}
+				}*/
 				/**
 				 * 用户收到的礼物
 				 */
@@ -254,15 +314,19 @@ public class TabPersonalFragment extends Fragment {
 			mSocialCard.setVisibility(View.GONE);
 			mSocialText.setVisibility(View.GONE);
 		}
-		if (!TextUtils.isEmpty(clientUser.user_name)) {
-			mUserName.setText(clientUser.user_name);
-		}
-		if ("男".equals(clientUser.sex)) {
-			mSexImg.setImageResource(R.mipmap.list_male);
+		if (AppManager.getClientUser().isShowVip &&
+				!TextUtils.isEmpty(clientUser.distance) &&
+				!"0.0".equals(clientUser.distance)) {
+			mMyLocation.setVisibility(View.VISIBLE);
+			mMapCard.setVisibility(View.VISIBLE);
 		} else {
-			mSexImg.setImageResource(R.mipmap.list_female);
+			mMapCard.setVisibility(View.GONE);
+			mMyLocation.setVisibility(View.GONE);
 		}
-		mAge.setText(String.valueOf(clientUser.age));
+		if (clientUser.userId.equals(AppManager.getClientUser().userId)) {
+			mMyLocation.setVisibility(View.GONE);
+			mMapCard.setVisibility(View.GONE);
+		}
 		if (!TextUtils.isEmpty(clientUser.purpose)) {
 			mPurpose.setText(clientUser.purpose);
 		}
@@ -332,22 +396,34 @@ public class TabPersonalFragment extends Fragment {
 			mPartFlowlayout.setVisibility(View.VISIBLE);
 			mVals.clear();
 			mVals = StringUtil.stringToIntList(clientUser.part_tag);
-			mPartFlowlayout.setAdapter(
-					new PersonalTagAdapter(mVals, mPartFlowlayout));
+			for (int i = 0; i < mVals.size(); i++) {
+				if ("".equals(mVals.get(i)) || " ".equals(mVals.get(i))) {
+					mVals.remove(i);
+				}
+			}
+			mPartFlowlayout.setTags(mVals);
 		}
 		if (!TextUtils.isEmpty(clientUser.personality_tag)) {
 			mPlableFlowlayout.setVisibility(View.VISIBLE);
 			mVals.clear();
 			mVals = StringUtil.stringToIntList(clientUser.personality_tag);
-			mPlableFlowlayout.setAdapter(
-					new PersonalTagAdapter(mVals, mPlableFlowlayout));
+			for (int i = 0; i < mVals.size(); i++) {
+				if ("".equals(mVals.get(i)) || " ".equals(mVals.get(i))) {
+					mVals.remove(i);
+				}
+			}
+			mPlableFlowlayout.setTags(mVals);
 		}
 		if (!TextUtils.isEmpty(clientUser.intrest_tag)) {
 			mIntrestFlowlayout.setVisibility(View.VISIBLE);
 			mVals.clear();
 			mVals = StringUtil.stringToIntList(clientUser.intrest_tag);
-			mIntrestFlowlayout.setAdapter(
-					new PersonalTagAdapter(mVals, mIntrestFlowlayout));
+			for (int i = 0; i < mVals.size(); i++) {
+				if ("".equals(mVals.get(i)) || " ".equals(mVals.get(i))) {
+					mVals.remove(i);
+				}
+			}
+			mIntrestFlowlayout.setTags(mVals);
 		}
 	}
 
@@ -410,7 +486,7 @@ public class TabPersonalFragment extends Fragment {
 		public void onPostExecute(final Integer integer) {
 			if (AppManager.getClientUser().isShowDownloadVip) {
 				Snackbar.make(getActivity().findViewById(R.id.content),
-						"您还不是赚钱会员，查看该号码已消耗101枚金币", Snackbar.LENGTH_LONG)
+						"您还不是赚钱会员，查看该号码已消耗101枚金币", Snackbar.LENGTH_SHORT)
 						.setActionTextColor(Color.RED)
 						.setAction("开通赚钱会员", new View.OnClickListener() {
 							@Override
@@ -422,7 +498,7 @@ public class TabPersonalFragment extends Fragment {
 						}).show();
 			} else {
 				Snackbar.make(getActivity().findViewById(R.id.content), "查看该号码已消耗101枚金币",
-						Snackbar.LENGTH_LONG).show();
+						Snackbar.LENGTH_SHORT).show();
 			}
 		}
 
@@ -472,74 +548,135 @@ public class TabPersonalFragment extends Fragment {
 		builder.show();
 	}
 
-	/**
-	 * tag的适配器
-	 */
-	class PersonalTagAdapter extends TagAdapter<String> {
-		private TagFlowLayout mLayout;
-
-		public PersonalTagAdapter(List<String> datas, TagFlowLayout layout) {
-			super(datas);
-			this.mLayout = layout;
-		}
-
-		@Override
-		public View getView(FlowLayout parent, int position, String t) {
-			TextView tv = (TextView) LayoutInflater.from(
-					getActivity()).inflate(R.layout.item_tv,
-					mLayout, false);
-			setIntrestItemColor(mLayout, tv);
-			tv.setText(t);
-			return tv;
-		}
-	}
-
-	/**
-	 * 根据不同类型设置不同的颜色
-	 *
-	 * @param mLayout
-	 * @param tv
-	 */
-	private void setIntrestItemColor(FlowLayout mLayout, TextView tv) {
-		if (mLayout == mPlableFlowlayout) {
-			if (Build.VERSION.SDK_INT >= 16) {
-				tv.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.hot_lable_checked_bg));
-			} else {
-				tv.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.hot_lable_checked_bg));
-			}
-			tv.setTextColor(getResources().getColor(R.color.book_text_color));
-		} else if (mLayout == mPartFlowlayout) {
-			if (Build.VERSION.SDK_INT >= 16) {
-				tv.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.hot_lable_music_bg));
-			} else {
-				tv.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.hot_lable_music_bg));
-			}
-			tv.setTextColor(getResources().getColor(R.color.music_text_color));
-		} else if (mLayout == mIntrestFlowlayout) {
-			if (Build.VERSION.SDK_INT >= 16) {
-				tv.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.hot_lable_intrest_bg));
-			} else {
-				tv.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.hot_lable_intrest_bg));
-			}
-			tv.setTextColor(getResources().getColor(R.color.travel_text_color));
-		}
-	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		mapView.onDestroy();
 		EventBus.getDefault().unregister(this);
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
+		mapView.onResume();
 		MobclickAgent.onPageStart(this.getClass().getName());
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
+		mapView.onPause();
+		stopLocation();// 停止定位
 		MobclickAgent.onPageEnd(this.getClass().getName());
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		mapView.onSaveInstanceState(outState);
+	}
+
+	/**
+	 * 销毁定位
+	 */
+	private void stopLocation() {
+		mMapCard.setVisibility(View.GONE);
+		if (aMapLocManager != null) {
+			aMapLocManager.removeUpdates(this);
+			aMapLocManager.destroy();
+		}
+		aMapLocManager = null;
+	}
+
+	@Override
+	public void onLocationChanged(final AMapLocation location) {
+		if (location != null) {
+			AppManager.getExecutorService().execute(new Runnable() {
+				@Override
+				public void run() {
+					PreferencesUtils.setLatitude(getActivity(), String.valueOf(location.getLatitude()));
+					PreferencesUtils.setLongitude(getActivity(), String.valueOf(location.getLongitude()));
+					aMapLocation = location;// 判断超时机制
+					LatLonPoint latLonPoint = new LatLonPoint(location.getLatitude() + latitude,
+							location.getLongitude() + longitude);
+					mLatLonPoint = latLonPoint;
+					LatLng latLng = new LatLng(location.getLatitude() + latitude,
+							location.getLongitude() + longitude);
+					aMap.animateCamera(CameraUpdateFactory.changeLatLng(latLng));
+					RegeocodeQuery query = new RegeocodeQuery(latLonPoint, 1000,
+							GeocodeSearch.AMAP);// 第一个参数表示一个Latlng，第二参数表示范围多少米，第三个参数表示是火系坐标系还是GPS原生坐标系
+					geocoderSearch.getFromLocationAsyn(query);// 设置同步逆地理编码请求
+				}
+			});
+		} else {
+			mMapCard.setVisibility(View.GONE);
+		}
+	}
+
+	@Override
+	public void onLocationChanged(Location location) {
+
+	}
+
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+
+	}
+
+	@Override
+	public void onProviderEnabled(String provider) {
+
+	}
+
+	@Override
+	public void onProviderDisabled(String provider) {
+
+	}
+
+	@Override
+	public void onMapScreenShot(Bitmap bitmap) {
+
+	}
+
+	@Override
+	public void onRegeocodeSearched(RegeocodeResult result, int rCode) {
+		if (rCode == 0) {
+			if (result != null && result.getRegeocodeAddress() != null
+					&& result.getRegeocodeAddress().getFormatAddress() != null) {
+				PoiItem poiItem = new PoiItem("", mLatLonPoint, "", result
+						.getRegeocodeAddress().getFormatAddress());
+				mAddress = poiItem.getSnippet();
+				mAdress.setText(mAddress);
+			} else {
+				mMyLocation.setVisibility(View.GONE);
+				mMapCard.setVisibility(View.GONE);
+//				ToastUtil.showMessage(R.string.no_result);
+			}
+		} else if (rCode == 27) {
+			mMyLocation.setVisibility(View.GONE);
+			mMapCard.setVisibility(View.GONE);
+//			ToastUtil.showMessage(R.string.error_network);
+		} else if (rCode == 32) {
+			mMyLocation.setVisibility(View.GONE);
+			mMapCard.setVisibility(View.GONE);
+//			ToastUtil.showMessage(R.string.error_key);
+		} else {
+			mMyLocation.setVisibility(View.GONE);
+			mMapCard.setVisibility(View.GONE);
+//			ToastUtil.showMessage(getString(R.string.error_other) + rCode);
+		}
+	}
+
+	@Override
+	public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
+
+	}
+
+	@Override
+	public void run() {
+		if (aMapLocation == null) {
+			stopLocation();// 销毁掉定位
+		}
 	}
 }

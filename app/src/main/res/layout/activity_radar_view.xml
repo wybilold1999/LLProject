@@ -5,29 +5,64 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
-	<android.support.v7.widget.Toolbar
-		android:id="@+id/toolbar_actionbar"
+	<RelativeLayout
 		android:layout_width="match_parent"
-		android:layout_height="?actionBarSize"
-		android:layout_alignParentTop="true"
-		android:background="@color/colorPrimary"
-		app:contentInsetStart="?actionBarInsetStart"
-		app:popupTheme="@style/ActionBarPopupThemeOverlay"
-		app:theme="@style/ActionBarThemeOverlay"
-		app:titleTextAppearance="@style/ActionBar.TitleText"/>
+		android:layout_height="match_parent"
+		android:background="@mipmap/bg_match_people"
+		android:layout_centerInParent="true">
 
-	<com.cyanbirds.lljy.ui.widget.RadarViewGroup
-		android:id="@+id/radar"
-		android:layout_width="280dp"
-		android:layout_height="280dp"
-		android:layout_centerVertical="true"
-		android:layout_centerInParent="true"
-		android:layout_marginTop="50dp">
+		<ImageView
+			android:id="@+id/radar_img"
+			android:layout_width="300dp"
+			android:layout_height="300dp"
+			android:layout_centerInParent="true"
+			android:src="@drawable/main_bottom_selecl_item"
+			android:visibility="gone" />
 
-		<com.cyanbirds.lljy.ui.widget.RadarView
-			android:id="@+id/id_scan_circle"
-			android:layout_width="280dp"
-			android:layout_height="280dp"/>
-	</com.cyanbirds.lljy.ui.widget.RadarViewGroup>
+		<ImageView
+			android:id="@+id/radar_bttom_img"
+			android:layout_width="300dp"
+			android:layout_height="300dp"
+			android:layout_centerInParent="true"
+			android:src="@drawable/amain_setting_bg" />
+
+		<ImageView
+			android:id="@+id/radar_top_img"
+			android:layout_width="300dp"
+			android:layout_height="300dp"
+			android:layout_centerInParent="true"
+			android:src="@drawable/main_setting_bg"
+			android:visibility="gone" />
+
+		<RelativeLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerInParent="true"
+			android:background="@drawable/circle">
+
+			<com.facebook.drawee.view.SimpleDraweeView
+				android:id="@+id/portrait"
+				android:layout_width="100dp"
+				android:layout_height="100dp"
+				android:layout_centerInParent="true"
+				android:contentDescription="@null"
+				app:actualImageScaleType="fitCenter"
+				app:failureImage="@mipmap/default_head"
+				app:placeholderImage="@mipmap/default_head"
+				app:placeholderImageScaleType="fitCenter"
+				app:roundAsCircle="true"/>
+
+		</RelativeLayout>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentBottom="true"
+			android:layout_centerHorizontal="true"
+			android:layout_marginBottom="80dp"
+			android:text="正为你推荐有缘的人..."
+			android:textSize="18sp"/>
+
+	</RelativeLayout>
 
 </RelativeLayout>

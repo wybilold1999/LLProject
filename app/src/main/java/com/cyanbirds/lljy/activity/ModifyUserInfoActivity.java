@@ -5,16 +5,13 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.graphics.Bitmap.CompressFormat;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,11 +37,9 @@ import com.cyanbirds.lljy.utils.Md5Util;
 import com.cyanbirds.lljy.utils.ProgressDialogUtils;
 import com.cyanbirds.lljy.utils.StringUtil;
 import com.cyanbirds.lljy.utils.ToastUtil;
+import com.dl7.tag.TagLayout;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.umeng.analytics.MobclickAgent;
-import com.zhy.view.flowlayout.FlowLayout;
-import com.zhy.view.flowlayout.TagAdapter;
-import com.zhy.view.flowlayout.TagFlowLayout;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -127,19 +122,19 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 	@BindView(R.id.lable_text)
 	TextView mLableText;
 	@BindView(R.id.lable_flowlayout)
-	TagFlowLayout mLableFlowlayout;
+	TagLayout mLableFlowlayout;
 	@BindView(R.id.lable_lay)
 	RelativeLayout mLableLay;
 	@BindView(R.id.part_text)
 	TextView mPartText;
 	@BindView(R.id.part_flowlayout)
-	TagFlowLayout mPartFlowlayout;
+	TagLayout mPartFlowlayout;
 	@BindView(R.id.part_lay)
 	RelativeLayout mPartLay;
 	@BindView(R.id.intrest_text)
 	TextView mIntrestText;
 	@BindView(R.id.intrest_flowlayout)
-	TagFlowLayout mIntrestFlowlayout;
+	TagLayout mIntrestFlowlayout;
 	@BindView(R.id.intrest_lay)
 	RelativeLayout mIntrestLay;
 	@BindView(R.id.weixin)
@@ -266,24 +261,38 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 				mLableText.setVisibility(View.GONE);
 				mVals.clear();
 				mVals = StringUtil.stringToIntList(clientUser.personality_tag);
-				mLableFlowlayout.setAdapter(
-						new PartLableTagAdapter(mVals, mLableFlowlayout));
+				for (int i = 0; i < mVals.size(); i++) {
+					if ("".equals(mVals.get(i)) || " ".equals(mVals.get(i))) {
+						mVals.remove(i);
+					}
+				}
+				mLableFlowlayout.setTags(mVals);
+//				mLableFlowlayout.setAdapter(
+//						new PartLableTagAdapter(mVals, mLableFlowlayout));
 			}
 			if (!TextUtils.isEmpty(clientUser.part_tag)) {
 				mPartFlowlayout.setVisibility(View.VISIBLE);
 				mPartText.setVisibility(View.GONE);
 				mVals.clear();
 				mVals = StringUtil.stringToIntList(clientUser.part_tag);
-				mPartFlowlayout.setAdapter(
-						new PartLableTagAdapter(mVals, mPartFlowlayout));
+				for (int i = 0; i < mVals.size(); i++) {
+					if ("".equals(mVals.get(i)) || " ".equals(mVals.get(i))) {
+						mVals.remove(i);
+					}
+				}
+				mPartFlowlayout.setTags(mVals);
 			}
 			if (!TextUtils.isEmpty(clientUser.intrest_tag)) {
 				mIntrestFlowlayout.setVisibility(View.VISIBLE);
 				mIntrestText.setVisibility(View.GONE);
 				mVals.clear();
 				mVals = StringUtil.stringToIntList(clientUser.intrest_tag);
-				mIntrestFlowlayout.setAdapter(
-						new PartLableTagAdapter(mVals, mIntrestFlowlayout));
+				for (int i = 0; i < mVals.size(); i++) {
+					if ("".equals(mVals.get(i)) || " ".equals(mVals.get(i))) {
+						mVals.remove(i);
+					}
+				}
+				mIntrestFlowlayout.setTags(mVals);
 			}
 		}
 	}
@@ -361,28 +370,6 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 			case R.id.qq_lay:
 				showEditDialog(mQq, R.string.qq);
 				break;
-		}
-	}
-
-	/**
-	 * tag的适配器
-	 */
-	class PartLableTagAdapter extends TagAdapter<String> {
-		private TagFlowLayout mLayout;
-
-		public PartLableTagAdapter(List<String> datas, TagFlowLayout layout) {
-			super(datas);
-			this.mLayout = layout;
-		}
-
-		@Override
-		public View getView(FlowLayout parent, int position, String t) {
-			TextView tv = (TextView) LayoutInflater.from(
-					ModifyUserInfoActivity.this).inflate(R.layout.item_tv,
-					mLayout, false);
-			setIntrestItemColor(mLayout, tv);
-			tv.setText(t);
-			return tv;
 		}
 	}
 
@@ -478,7 +465,7 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("年龄");
 		builder.setSingleChoiceItems(array, 7, null);
-		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+		builder.setPositiveButton(R.string.ok, new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();
@@ -497,7 +484,7 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 		final String[] array = getResources().getStringArray(R.array.occupation);
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setSingleChoiceItems(array, 1, null);
-		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+		builder.setPositiveButton(R.string.ok, new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();
@@ -516,7 +503,7 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 		final String[] array = getResources().getStringArray(R.array.education);
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setSingleChoiceItems(array, 5, null);
-		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+		builder.setPositiveButton(R.string.ok, new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();
@@ -535,7 +522,7 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 		final String[] array = getResources().getStringArray(R.array.purpose);
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setSingleChoiceItems(array, 3, null);
-		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+		builder.setPositiveButton(R.string.ok, new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();
@@ -554,7 +541,7 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 		final String[] array = getResources().getStringArray(R.array.where);
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setSingleChoiceItems(array, 3, null);
-		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+		builder.setPositiveButton(R.string.ok, new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();
@@ -573,7 +560,7 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 		final String[] array = getResources().getStringArray(R.array.doWhatFirst);
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setSingleChoiceItems(array, 3, null);
-		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+		builder.setPositiveButton(R.string.ok, new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();
@@ -592,7 +579,7 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 		final String[] array = getResources().getStringArray(R.array.conception);
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setSingleChoiceItems(array, 3, null);
-		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+		builder.setPositiveButton(R.string.ok, new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();
@@ -642,7 +629,7 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 	}
 
 	private void commonDialog(int resId, final String[] array, final boolean[] isSelected,
-							  final TagFlowLayout mLayout, final TextView textView) {
+							  final TagLayout mLayout, final TextView textView) {
 		Builder builder = new Builder(this);
 		builder.setTitle(resId);
 		builder.setMultiChoiceItems(array, isSelected, new DialogInterface.OnMultiChoiceClickListener() {
@@ -669,18 +656,7 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 				if (mVals != null && mVals.size() > 0) {
 					mLayout.setVisibility(View.VISIBLE);
 					textView.setVisibility(View.GONE);
-					mLayout.setAdapter(new TagAdapter<String>(mVals) {
-						@Override
-						public View getView(FlowLayout parent, int position, String s) {
-							TextView tv = (TextView) LayoutInflater.from(
-									ModifyUserInfoActivity.this).inflate(R.layout.item_tv,
-									mLayout, false);
-							//根据不同兴趣类型设置不同的颜色
-							setIntrestItemColor(mLayout, tv);
-							tv.setText(s);
-							return tv;
-						}
-					});
+					mLayout.setTags(mVals);
 					String value = StringUtil.listToString(mVals);
 					if (mLayout == mLableFlowlayout) {
 						clientUser.personality_tag = value;
@@ -764,37 +740,6 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 					commonDialog(R.string.satisfacies_part, intrestArray, partSelected, mIntrestFlowlayout, mIntrestText);
 				}
 				break;
-		}
-	}
-
-	/**
-	 * 根据不同类型设置不同的颜色
-	 *
-	 * @param mLayout
-	 * @param tv
-	 */
-	private void setIntrestItemColor(FlowLayout mLayout, TextView tv) {
-		if (mLayout == mLableFlowlayout) {
-			if (Build.VERSION.SDK_INT >= 16) {
-				tv.setBackground(ContextCompat.getDrawable(this, R.drawable.hot_lable_checked_bg));
-			} else {
-				tv.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.hot_lable_checked_bg));
-			}
-			tv.setTextColor(getResources().getColor(R.color.book_text_color));
-		} else if (mLayout == mPartFlowlayout) {
-			if (Build.VERSION.SDK_INT >= 16) {
-				tv.setBackground(ContextCompat.getDrawable(this, R.drawable.hot_lable_music_bg));
-			} else {
-				tv.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.hot_lable_music_bg));
-			}
-			tv.setTextColor(getResources().getColor(R.color.music_text_color));
-		} else if (mLayout == mIntrestFlowlayout) {
-			if (Build.VERSION.SDK_INT >= 16) {
-				tv.setBackground(ContextCompat.getDrawable(this, R.drawable.hot_lable_intrest_bg));
-			} else {
-				tv.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.hot_lable_intrest_bg));
-			}
-			tv.setTextColor(getResources().getColor(R.color.travel_text_color));
 		}
 	}
 
@@ -1014,7 +959,7 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 					.parse("file://" + FileUtils.getPath(this, originalUri)));
 		} else if (resultCode == RESULT_OK && requestCode == PHOTO_CUT_RESULT) {
 			mPortraitUri = data.getData();
-			if (mPortraitUri == null) {
+			if (mPortraitUri == null && mCutFile != null) {
 				mPortraitUri = Uri.parse(mCutFile.getPath());
 			}
 			if (mPortraitUri != null

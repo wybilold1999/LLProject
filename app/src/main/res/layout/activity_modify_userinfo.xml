@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
     <include layout="@layout/toolbar_actionbar_with_headerbar" />
 
@@ -866,9 +866,11 @@
                     android:layout_height="wrap_content"
                     android:background="?android:selectableItemBackground"
                     android:clickable="true"
-                    android:descendantFocusability="blocksDescendants">
+                    android:descendantFocusability="blocksDescendants"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
-                    <ImageView
+                    <com.facebook.drawee.view.SimpleDraweeView
                         android:id="@+id/lable_icon"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
@@ -877,8 +879,11 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
-                        android:scaleType="centerCrop"
-                        android:src="@mipmap/icon_intrest" />
+                        app:actualImageScaleType="centerCrop"
+                        app:failureImage="@mipmap/icon_plable"
+                        app:placeholderImage="@mipmap/icon_plable"
+                        app:placeholderImageScaleType="centerCrop"
+                        app:roundAsCircle="true"/>
 
                     <TextView
                         android:id="@+id/lable_text"
@@ -905,29 +910,29 @@
                         android:contentDescription="@null"
                         android:src="@mipmap/personal_enter" />
 
-                    <com.zhy.view.flowlayout.TagFlowLayout
+                    <com.dl7.tag.TagLayout
                         android:id="@+id/lable_flowlayout"
-                        app:max_select="-1"
+                        app:tag_view_border_color="@color/book_text_color"
+                        app:tag_view_text_color="@color/book_text_color"
+                        style="@style/TagLayout.custom.personal"
+                        android:layout_toRightOf="@id/lable_icon"
+                        android:layout_toLeftOf="@id/personal_enter_lable"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginStart="20dp"
-                        android:padding="20dp"
-                        android:visibility="gone">
-                    </com.zhy.view.flowlayout.TagFlowLayout>
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"/>
+
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
 
             <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="20dp"
-            android:paddingTop="10dp"
-            android:text="@string/satisfacies_part"
-            android:textColor="@color/gray_text" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:paddingTop="10dp"
+                android:text="@string/satisfacies_part"
+                android:textColor="@color/gray_text" />
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -942,7 +947,9 @@
                     android:layout_height="wrap_content"
                     android:background="?android:selectableItemBackground"
                     android:clickable="true"
-                    android:descendantFocusability="blocksDescendants">
+                    android:descendantFocusability="blocksDescendants"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
                         android:id="@+id/part_icon"
@@ -981,19 +988,19 @@
                         android:contentDescription="@null"
                         android:src="@mipmap/personal_enter" />
 
-                    <com.zhy.view.flowlayout.TagFlowLayout
+                    <com.dl7.tag.TagLayout
                         android:id="@+id/part_flowlayout"
-                        app:max_select="-1"
+                        app:tag_view_border_color="@color/music_text_color"
+                        app:tag_view_text_color="@color/music_text_color"
+                        style="@style/TagLayout.custom.personal"
+                        android:layout_toRightOf="@id/part_icon"
+                        android:layout_toLeftOf="@id/personal_enter_part"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginStart="20dp"
-                        android:padding="20dp"
-                        android:visibility="gone">
-                    </com.zhy.view.flowlayout.TagFlowLayout>
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"/>
+
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
 
@@ -1018,7 +1025,9 @@
                     android:layout_height="wrap_content"
                     android:background="?android:selectableItemBackground"
                     android:clickable="true"
-                    android:descendantFocusability="blocksDescendants">
+                    android:descendantFocusability="blocksDescendants"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
                         android:id="@+id/intrest_icon"
@@ -1046,6 +1055,7 @@
                         android:textSize="16sp" />
 
                     <ImageView
+                        android:id="@id/personal_enter_part"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
@@ -1056,19 +1066,19 @@
                         android:contentDescription="@null"
                         android:src="@mipmap/personal_enter" />
 
-                    <com.zhy.view.flowlayout.TagFlowLayout
+                    <com.dl7.tag.TagLayout
                         android:id="@+id/intrest_flowlayout"
-                        app:max_select="-1"
+                        app:tag_view_border_color="@color/travel_text_color"
+                        app:tag_view_text_color="@color/travel_text_color"
+                        style="@style/TagLayout.custom.personal"
+                        android:layout_toRightOf="@id/intrest_icon"
+                        android:layout_toLeftOf="@id/personal_enter_part"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginStart="20dp"
-                        android:padding="20dp"
-                        android:visibility="gone">
-                    </com.zhy.view.flowlayout.TagFlowLayout>
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"/>
+
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
 

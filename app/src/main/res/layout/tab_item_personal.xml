@@ -25,7 +25,8 @@
 				app:cardBackgroundColor="#fff"
 				app:cardCornerRadius="0dp"
 				app:cardElevation="1dp"
-				app:cardPreventCornerOverlap="true">
+				app:cardPreventCornerOverlap="true"
+				android:visibility="gone">
 
 				<android.support.v7.widget.RecyclerView
 					android:id="@+id/recyclerview"
@@ -41,65 +42,8 @@
 			<View
 				android:layout_width="match_parent"
 				android:layout_height="1px"
-				android:layout_marginTop="2dp"/>
-
-			<android.support.v7.widget.CardView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:visibility="gone"
-				app:cardBackgroundColor="#fff"
-				app:cardCornerRadius="0dp"
-				app:cardElevation="1dp"
-				app:cardPreventCornerOverlap="true">
-
-				<RelativeLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_marginBottom="10dp"
-					android:layout_marginLeft="20dp"
-					android:layout_marginTop="10dp">
-
-					<TextView
-						android:id="@+id/user_name"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:layout_centerVertical="true"
-						android:text="小强"
-						android:textColor="@color/body_text_1"
-						android:textSize="18sp"/>
-
-					<RelativeLayout
-						android:layout_width="38dp"
-						android:layout_height="16dp"
-						android:layout_centerVertical="true"
-						android:layout_marginLeft="10dp"
-						android:layout_marginTop="5dp"
-						android:layout_toRightOf="@id/user_name"
-						android:background="@drawable/user_age_attr_radius_background"
-						android:orientation="horizontal">
-
-						<ImageView
-							android:id="@+id/sex_img"
-							android:layout_width="10dp"
-							android:layout_height="10dp"
-							android:layout_centerVertical="true"
-							android:layout_marginLeft="5dp"
-							android:src="@mipmap/list_female"/>
-
-						<TextView
-							android:id="@+id/age"
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:layout_centerVertical="true"
-							android:layout_marginLeft="5dp"
-							android:layout_toRightOf="@id/sex_img"
-							android:textColor="@android:color/white"
-							android:textSize="12sp"/>
-
-					</RelativeLayout>
-
-				</RelativeLayout>
-			</android.support.v7.widget.CardView>
+				android:layout_marginTop="2dp"
+				android:visibility="gone"/>
 
 			<TextView
 				android:id="@+id/gift_text"
@@ -720,17 +664,88 @@
 			</android.support.v7.widget.CardView>
 
 			<TextView
+				android:id="@+id/my_location"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:paddingLeft="20dp"
 				android:paddingTop="8dp"
-				android:text="我的标签"
+				android:text="我的地点"
+				android:textColor="@color/gray_text"
+				android:visibility="gone"/>
+
+			<android.support.v7.widget.CardView
+				android:id="@+id/map_card"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_marginTop="8dp"
+				app:cardBackgroundColor="#fff"
+				app:cardCornerRadius="0dp"
+				app:cardElevation="1dp"
+				app:cardPreventCornerOverlap="true"
+				android:visibility="gone">
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="match_parent"
+					android:orientation="vertical">
+
+					<FrameLayout
+						android:layout_width="match_parent"
+						android:layout_height="0dp"
+						android:layout_weight="8"
+						android:padding="8dp">
+
+						<com.amap.api.maps2d.MapView
+							android:id="@+id/map"
+							android:layout_width="match_parent"
+							android:layout_height="200dp" />
+
+						<ImageView
+							android:layout_width="30dp"
+							android:layout_height="30dp"
+							android:layout_gravity="center"
+							android:layout_marginBottom="15dp"
+							android:contentDescription="@null"
+							android:src="@mipmap/ic_map_center_marked" />
+
+					</FrameLayout>
+
+					<TextView
+						android:layout_width="match_parent"
+						android:layout_height="0dp"
+						android:layout_weight="1"
+						android:paddingLeft="8dp"
+						android:paddingBottom="8dp"
+						android:text="上次出现在:"
+						android:textColor="@color/body_text_1"
+						android:textSize="16sp"/>
+
+					<TextView
+						android:id="@+id/address"
+						android:layout_width="match_parent"
+						android:layout_height="0dp"
+						android:layout_weight="1"
+						android:paddingLeft="8dp"
+						android:paddingBottom="8dp"
+						android:textSize="12sp"/>
+
+				</LinearLayout>
+
+			</android.support.v7.widget.CardView>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:paddingLeft="20dp"
+				android:paddingTop="8dp"
+				android:text="我的标签/魅力部位/兴趣爱好"
 				android:textColor="@color/gray_text"/>
 
 			<android.support.v7.widget.CardView
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
 				android:layout_marginTop="8dp"
+				android:layout_marginBottom="50dp"
 				app:cardBackgroundColor="#fff"
 				app:cardCornerRadius="0dp"
 				app:cardElevation="1dp"
@@ -751,8 +766,8 @@
 
 						<com.facebook.drawee.view.SimpleDraweeView
 							android:id="@+id/plable_icon"
-							android:layout_width="18dp"
-							android:layout_height="18dp"
+							android:layout_width="22dp"
+							android:layout_height="22dp"
 							android:layout_alignParentLeft="true"
 							android:layout_alignParentStart="true"
 							android:layout_centerVertical="true"
@@ -764,22 +779,17 @@
 							app:placeholderImageScaleType="centerCrop"
 							app:roundAsCircle="true"/>
 
-						<com.zhy.view.flowlayout.TagFlowLayout
+						<com.dl7.tag.TagLayout
 							android:id="@+id/plable_flowlayout"
+							app:tag_view_border_color="@color/book_text_color"
+							app:tag_view_text_color="@color/book_text_color"
+							style="@style/TagLayout.custom.personal"
+							android:layout_toRightOf="@id/plable_icon"
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
-							android:layout_alignParentLeft="true"
-							android:layout_alignParentStart="true"
 							android:layout_centerVertical="true"
-							android:layout_marginLeft="20dp"
-							android:layout_marginStart="20dp"
-							android:paddingBottom="8dp"
-							android:paddingTop="5dp"
-							android:paddingLeft="5dp"
-							android:paddingRight="5dp"
-							android:visibility="gone"
-							app:max_select="-1">
-						</com.zhy.view.flowlayout.TagFlowLayout>
+							android:layout_marginLeft="8dp"
+							android:layout_marginStart="8dp"/>
 
 						<View
 							android:layout_width="match_parent"
@@ -789,30 +799,6 @@
 							android:background="@color/divider_color"
 							android:contentDescription="@null"/>
 					</RelativeLayout>
-				</LinearLayout>
-			</android.support.v7.widget.CardView>
-
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:paddingLeft="20dp"
-				android:paddingTop="8dp"
-				android:text="魅力部位"
-				android:textColor="@color/gray_text"/>
-
-			<android.support.v7.widget.CardView
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:layout_marginTop="8dp"
-				app:cardBackgroundColor="#fff"
-				app:cardCornerRadius="0dp"
-				app:cardElevation="1dp"
-				app:cardPreventCornerOverlap="true">
-
-				<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:orientation="vertical">
 
 					<RelativeLayout
 						android:id="@+id/part_lay"
@@ -822,34 +808,33 @@
 						android:clickable="true"
 						android:descendantFocusability="blocksDescendants">
 
-						<ImageView
+						<com.facebook.drawee.view.SimpleDraweeView
 							android:id="@+id/part_icon"
-							android:layout_width="18dp"
-							android:layout_height="18dp"
+							android:layout_width="22dp"
+							android:layout_height="22dp"
 							android:layout_alignParentLeft="true"
 							android:layout_alignParentStart="true"
 							android:layout_centerVertical="true"
 							android:layout_marginLeft="20dp"
 							android:layout_marginStart="20dp"
-							android:scaleType="centerCrop"
-							android:src="@mipmap/icon_part"/>
+							app:actualImageScaleType="centerCrop"
+							app:failureImage="@mipmap/icon_part"
+							app:placeholderImage="@mipmap/icon_part"
+							app:placeholderImageScaleType="centerCrop"
+							app:roundAsCircle="true"/>
 
-						<com.zhy.view.flowlayout.TagFlowLayout
+
+						<com.dl7.tag.TagLayout
 							android:id="@+id/part_flowlayout"
-							android:layout_width="match_parent"
+							app:tag_view_border_color="@color/music_text_color"
+							app:tag_view_text_color="@color/music_text_color"
+							style="@style/TagLayout.custom.personal"
+							android:layout_toRightOf="@id/part_icon"
+							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
-							android:layout_alignParentLeft="true"
-							android:layout_alignParentStart="true"
 							android:layout_centerVertical="true"
-							android:layout_marginLeft="20dp"
-							android:layout_marginStart="20dp"
-							android:paddingBottom="8dp"
-							android:paddingTop="5dp"
-							android:paddingLeft="5dp"
-							android:paddingRight="5dp"
-							android:visibility="gone"
-							app:max_select="-1">
-						</com.zhy.view.flowlayout.TagFlowLayout>
+							android:layout_marginLeft="8dp"
+							android:layout_marginStart="8dp"/>
 
 						<View
 							android:layout_width="match_parent"
@@ -859,31 +844,6 @@
 							android:background="@color/divider_color"
 							android:contentDescription="@null"/>
 					</RelativeLayout>
-				</LinearLayout>
-			</android.support.v7.widget.CardView>
-
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:paddingLeft="20dp"
-				android:paddingTop="8dp"
-				android:text="兴趣爱好"
-				android:textColor="@color/gray_text"/>
-
-			<android.support.v7.widget.CardView
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:layout_marginBottom="45dp"
-				android:layout_marginTop="8dp"
-				app:cardBackgroundColor="#fff"
-				app:cardCornerRadius="0dp"
-				app:cardElevation="1dp"
-				app:cardPreventCornerOverlap="true">
-
-				<LinearLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:orientation="vertical">
 
 					<RelativeLayout
 						android:id="@+id/intrest_lay"
@@ -893,36 +853,42 @@
 						android:clickable="true"
 						android:descendantFocusability="blocksDescendants">
 
-						<ImageView
+						<com.facebook.drawee.view.SimpleDraweeView
 							android:id="@+id/intrest_icon"
-							android:layout_width="18dp"
-							android:layout_height="18dp"
+							android:layout_width="22dp"
+							android:layout_height="22dp"
 							android:layout_alignParentLeft="true"
 							android:layout_alignParentStart="true"
 							android:layout_centerVertical="true"
 							android:layout_marginLeft="20dp"
 							android:layout_marginStart="20dp"
-							android:scaleType="centerCrop"
-							android:src="@mipmap/icon_intrest"/>
+							app:actualImageScaleType="centerCrop"
+							app:failureImage="@mipmap/icon_intrest"
+							app:placeholderImage="@mipmap/icon_intrest"
+							app:placeholderImageScaleType="centerCrop"
+							app:roundAsCircle="true"/>
 
-						<com.zhy.view.flowlayout.TagFlowLayout
+						<com.dl7.tag.TagLayout
 							android:id="@+id/intrest_flowlayout"
-							android:layout_width="match_parent"
+							style="@style/TagLayout.custom.personal"
+							app:tag_view_border_color="@color/travel_text_color"
+							app:tag_view_text_color="@color/travel_text_color"
+							android:layout_toRightOf="@id/intrest_icon"
+							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
-							android:layout_alignParentLeft="true"
-							android:layout_alignParentStart="true"
 							android:layout_centerVertical="true"
-							android:layout_marginLeft="20dp"
-							android:layout_marginStart="20dp"
-							android:paddingBottom="8dp"
-							android:paddingTop="5dp"
-							android:paddingLeft="5dp"
-							android:paddingRight="5dp"
-							android:visibility="gone"
-							app:max_select="-1">
-						</com.zhy.view.flowlayout.TagFlowLayout>
+							android:layout_marginLeft="8dp"
+							android:layout_marginStart="8dp"/>
 
+						<View
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/divider_height"
+							android:layout_alignParentBottom="true"
+							android:layout_marginLeft="@dimen/divider_margin_left"
+							android:background="@color/divider_color"
+							android:contentDescription="@null"/>
 					</RelativeLayout>
+
 				</LinearLayout>
 			</android.support.v7.widget.CardView>
 

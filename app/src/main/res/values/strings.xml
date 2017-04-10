@@ -20,7 +20,7 @@
     <string name="albums">相册</string>
 
     <string name="vip_center">会员中心</string>
-    <string name="download_make_money">下载赚钱</string>
+    <string name="download_make_money">免费赚钱</string>
     <string name="identify">身份认证</string>
     <string name="message">私信</string>
     <string name="attention">关注</string>
@@ -216,6 +216,9 @@
     <string name="exit_tips">别按了,再按就要离开您了</string>
     <string name="click_count_has_used">好厉害，今天已经赚了%1$d元，明天再继续赚吧</string>
     <string name="get_banlance">提现申请最少100元，必须为100的整数倍</string>
+    <string name="reward">抽奖活动</string>
+    <string name="reward_count_over">您的抽奖次数已经用完，继续购买套餐又可获得3次抽奖机会</string>
+    <string name="no_reward_count">您的抽奖次数为0，购买套餐可获得3次抽奖机会</string>
 
     <string name="errcode_success">发送成功</string>
     <string name="errcode_cancel">发送取消</string>

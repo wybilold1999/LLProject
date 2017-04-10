@@ -207,4 +207,13 @@ public interface UserService {
     @POST("user/sendGift")
     Call<ResponseBody> sendGift(@FieldMap ArrayMap<String, String> params, @Header("token") String token);
 
+    /**
+     * 上传token
+     * @param token
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("user/uploadToken")
+    Call<ResponseBody> uploadToken( @Field("gtClientId") String gtClientId, @Header("token") String token);
+
 }

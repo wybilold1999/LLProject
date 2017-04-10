@@ -89,10 +89,8 @@ public class AttentionMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 itemViewHolder.mSexImg.setImageResource(R.mipmap.list_female);
             }
             itemViewHolder.user_name.setText(followModel.nickname);
-            itemViewHolder.marray_state.setText(followModel.emotionStatus);
             itemViewHolder.constellation.setText(followModel.constellation);
             itemViewHolder.signature.setText(followModel.signature);
-            itemViewHolder.distance.setText(followModel.distance + "公里");
             if(followModel.isVip && AppManager.getClientUser().isShowVip){
                 itemViewHolder.mIsVip.setVisibility(View.VISIBLE);
             } else {
@@ -121,10 +119,8 @@ public class AttentionMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         SimpleDraweeView portrait;
         TextView user_name;
         TextView age;
-        TextView marray_state;
         TextView constellation;
         TextView signature;
-        TextView distance;
         ImageView mIsVip;
         ImageView mSexImg;
         public ItemViewHolder(View itemView) {
@@ -132,10 +128,8 @@ public class AttentionMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             portrait = (SimpleDraweeView) itemView.findViewById(R.id.portrait);
             user_name = (TextView) itemView.findViewById(R.id.user_name);
             age = (TextView) itemView.findViewById(R.id.age);
-            marray_state = (TextView) itemView.findViewById(R.id.marray_state);
             constellation = (TextView) itemView.findViewById(R.id.constellation);
             signature = (TextView) itemView.findViewById(R.id.signature);
-            distance = (TextView) itemView.findViewById(R.id.distance);
             mIsVip = (ImageView) itemView.findViewById(R.id.is_vip);
             mSexImg = (ImageView) itemView.findViewById(R.id.sex_img);
             itemView.setOnClickListener(this);

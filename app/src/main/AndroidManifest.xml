@@ -532,15 +532,6 @@
             android:name="PUSH_APPSECRET"
             android:value="XSsZQBZGek8GjZnOBAXMe1" />
 
-        <!-- 配置第三方Receiver -->
-        <receiver
-            android:name="com.cyanbirds.lljy.receiver.GeTuiPushReceiver"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="com.igexin.sdk.action.fn4zeTabxU6Z7jbRgm0d19" />
-            </intent-filter>
-        </receiver>
-
         <!-- 配置SDK核心服务 -->
         <service
             android:name="com.igexin.sdk.PushService"
@@ -551,32 +542,17 @@
                 <action android:name="com.igexin.sdk.action.service.message"/>
             </intent-filter>
         </service>
-        <service
-            android:name="com.igexin.sdk.PushServiceUser"
-            android:exported="true"
-            android:label="NotificationCenterUser" >
-            <intent-filter>
-                <action android:name="com.igexin.sdk.action.user.message"/>
-            </intent-filter>
-        </service>
 
-        <receiver android:name="com.igexin.sdk.PushReceiver" >
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-                <action android:name="android.intent.action.USER_PRESENT" />
-                <action android:name="com.igexin.sdk.action.refreshls" />
-                <!-- 以下三项为可选的action声明，可大大提高service存活率和消息到达速度 -->
-                <action android:name="android.intent.action.MEDIA_MOUNTED" />
-                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
-                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
-            </intent-filter>
-        </receiver>
         <receiver
-            android:name="com.igexin.sdk.PushManagerReceiver"
-            android:exported="false" >
+            android:name="com.igexin.sdk.PushReceiver">
             <intent-filter>
-                <action android:name="com.igexin.sdk.action.pushmanager" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.intent.action.USER_PRESENT"/>
+                <action android:name="com.igexin.sdk.action.refreshls"/>
+                <action android:name="android.intent.action.MEDIA_MOUNTED"/>
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
             </intent-filter>
         </receiver>
 
@@ -586,24 +562,7 @@
             android:exported="false"
             android:process=":pushservice"
             android:taskAffinity="com.igexin.sdk.PushActivityTask"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
-        </activity>
-
-        <service
-            android:name="com.igexin.download.DownloadService"
-            android:process=":pushservice" />
-
-        <receiver android:name="com.igexin.download.DownloadReceiver" >
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
-
-        <provider
-            android:name="com.igexin.download.DownloadProvider"
-            android:exported="true"
-            android:authorities="downloads.com.cyanbirds.lljy"
-            android:process=":pushservice" />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
         <activity
             android:name="com.igexin.sdk.GActivity"
@@ -612,6 +571,34 @@
             android:process=":pushservice"
             android:taskAffinity="com.igexin.sdk.PushActivityTask"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+
+        <service
+            android:name="com.igexin.download.DownloadService"
+            android:process=":pushservice"/>
+
+        <receiver
+            android:name="com.igexin.download.DownloadReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
+
+        <provider
+            android:name="com.igexin.download.DownloadProvider"
+            android:authorities="com.cyanbirds.lljy"
+            android:exported="true"
+            android:process=":pushservice"/>
+
+        <!-- 用户自定义服务继承自GTIntentService,作为SDK与APP桥梁服务,用来接收各种消息和命令回复-->
+        <service android:name=".service.MyIntentService"/>
+
+        <!-- 用户自定义服务名 -->
+        <service
+            android:name=".service.MyPushService"
+            android:exported="true"
+            android:label="PushService"
+            android:process=":pushservice">
+        </service>
         //====================个推推送结束=================================
 
         //====================极光推送开始=================================

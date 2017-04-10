@@ -1,19 +1,26 @@
 package com.cyanbirds.lljy.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.widget.Toolbar;
-import android.util.SparseArray;
+import android.text.TextUtils;
+import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.ScaleAnimation;
+import android.widget.ImageView;
 
 import com.cyanbirds.lljy.R;
 import com.cyanbirds.lljy.activity.base.BaseActivity;
 import com.cyanbirds.lljy.config.ValueKey;
-import com.cyanbirds.lljy.entity.Info;
 import com.cyanbirds.lljy.entity.YuanFenModel;
+import com.cyanbirds.lljy.manager.AppManager;
 import com.cyanbirds.lljy.net.request.GetYuanFenUserRequest;
-import com.cyanbirds.lljy.ui.widget.RadarViewGroup;
 import com.cyanbirds.lljy.utils.ToastUtil;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.umeng.analytics.MobclickAgent;
 
 import java.io.Serializable;
@@ -24,53 +31,138 @@ import java.util.List;
  * 时间：2016/9/18 19:54
  * 描述：请求缘分
  */
-public class RadarActivity extends BaseActivity implements RadarViewGroup.IRadarClickListener{
+public class RadarActivity extends BaseActivity {
 
 	private int pageNo = 0;
 	private int pageSize = 200;
 
-	private RadarViewGroup radarViewGroup;
-
-	private SparseArray<Info> mDatas = new SparseArray<>();
+	private ImageView radarbttom;
+	private ImageView radartop;
+	private ImageView mAnnularImg;
+	private AnimationSet grayAnimal;
+	private SimpleDraweeView mPortrait;
 	private Handler mHandler = new Handler();
+
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_radar_view);
 		setupView();
-		initData();
 	}
 
 	private void setupView() {
-		radarViewGroup = (RadarViewGroup) findViewById(R.id.radar);
-		Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-		if (mToolbar != null) {
-			setSupportActionBar(mToolbar);
+		mAnnularImg = (ImageView) findViewById(R.id.radar_img);
+		radartop = (ImageView) findViewById(R.id.radar_top_img);
+		radarbttom = (ImageView) findViewById(R.id.radar_bttom_img);
+		mPortrait = (SimpleDraweeView) findViewById(R.id.portrait);
+
+		if (!TextUtils.isEmpty(AppManager.getClientUser().face_local)) {
+			mPortrait.setImageURI(Uri.parse("file://" + AppManager.getClientUser().face_local));
 		}
 
+		startcircularAnima();
 		mHandler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				radarViewGroup.setDatas(mDatas);
 				new GetYuanFenUserTask().request(pageNo, pageSize);
 			}
-		}, 2000);
-		radarViewGroup.setiRadarClickListener(this);
+		}, 3000);
 	}
 
-	private void initData() {
-		for (int i = 0; i < 8; i++) {
-			Info info = new Info();
-			info.setSex(i % 3 == 0 ? false : true);
-			info.setDistance(Math.round((Math.random() * 10) * 100) / 100);
-			mDatas.put(i, info);
-		}
+	private void startcircularAnima() {
+		grayAnimal = playHeartbeatAnimation();
+		radarbttom.startAnimation(grayAnimal);
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				startwhiteAnimal();
+			}
+		}, 400);
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				startannularAnimat();
+			}
+		}, 600);
 	}
 
-	@Override
-	public void onRadarItemClick(int position) {
+	private AnimationSet playHeartbeatAnimation() {
+		AnimationSet animationSet = new AnimationSet(true);
+		ScaleAnimation sa = new ScaleAnimation(0.3f, 1.0f, 0.3f, 1.0f,
+				ScaleAnimation.RELATIVE_TO_SELF, 0.5f,
+				ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
+		sa.setDuration(900);
+		sa.setFillAfter(true);
+		sa.setRepeatCount(0);
+		sa.setInterpolator(new LinearInterpolator());
+		animationSet.addAnimation(sa);
+		return animationSet;
+	}
 
+	private void startannularAnimat() {
+		mAnnularImg.setVisibility(View.VISIBLE);
+		AnimationSet annularAnimat = getAnimAnnular();
+		annularAnimat.setAnimationListener(new Animation.AnimationListener() {
+
+			@Override
+			public void onAnimationStart(Animation animation) {
+
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				mAnnularImg.setVisibility(View.GONE);
+			}
+		});
+		mAnnularImg.startAnimation(annularAnimat);
+	}
+
+	private void startwhiteAnimal() {
+		AnimationSet whiteAnimal = playHeartbeatAnimation();
+		whiteAnimal.setRepeatCount(0);
+		whiteAnimal.setDuration(700);
+		radartop.setVisibility(View.VISIBLE);
+		radartop.startAnimation(whiteAnimal);
+		whiteAnimal.setAnimationListener(new Animation.AnimationListener() {
+			@Override
+			public void onAnimationStart(Animation animation) {
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+			}
+
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				mAnnularImg.setVisibility(View.GONE);
+				radartop.setVisibility(View.GONE);
+				startcircularAnima();
+			}
+		});
+
+	}
+
+	private AnimationSet getAnimAnnular() {
+		AnimationSet animationSet = new AnimationSet(true);
+		ScaleAnimation sa = new ScaleAnimation(1.0f, 1.5f, 1.0f, 1.5f,
+				ScaleAnimation.RELATIVE_TO_SELF, 0.5f,
+				ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
+		animationSet.addAnimation(new AlphaAnimation(1.0f, 0.1f));
+		animationSet.setDuration(400);
+		sa.setDuration(500);
+		sa.setFillAfter(true);
+		sa.setRepeatCount(0);
+		sa.setInterpolator(new LinearInterpolator());
+		animationSet.addAnimation(sa);
+		return animationSet;
 	}
 
 	class GetYuanFenUserTask extends GetYuanFenUserRequest {

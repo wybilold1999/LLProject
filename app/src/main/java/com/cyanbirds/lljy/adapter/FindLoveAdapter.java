@@ -13,16 +13,13 @@ import android.widget.TextView;
 import com.cyanbirds.lljy.R;
 import com.cyanbirds.lljy.entity.ClientUser;
 import com.cyanbirds.lljy.manager.AppManager;
-import com.cyanbirds.lljy.net.request.AddLoveRequest;
-import com.cyanbirds.lljy.net.request.SendGreetRequest;
 import com.cyanbirds.lljy.utils.StringUtil;
-import com.cyanbirds.lljy.utils.ToastUtil;
+import com.dl7.tag.TagLayout;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.wx.goodview.GoodView;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
-
 
 
 /**
@@ -86,7 +83,6 @@ public class FindLoveAdapter extends
                 return;
             }
             ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-            itemViewHolder.mLove.setImageResource(R.mipmap.love_default);
             itemViewHolder.userName.setText(clientUser.user_name);
             itemViewHolder.age.setText(String.valueOf(clientUser.age));
             if ("男".equals(clientUser.sex)) {
@@ -113,22 +109,19 @@ public class FindLoveAdapter extends
                 itemViewHolder.portrait.setImageURI(Uri.parse("res:///" + R.mipmap.default_head));
             }
             if (!TextUtils.isEmpty(clientUser.personality_tag)) {
-                if (clientUser.personality_tag.contains(";")) {
-                    List<String> tags = StringUtil.stringToIntList(clientUser.personality_tag);
-                    if (tags != null && tags.size() > 0) {
-                        itemViewHolder.mLableFirst.setText(tags.get(0));
-                        if (tags.size() > 1) {
-                            itemViewHolder.mLableSec.setVisibility(View.VISIBLE);
-                            itemViewHolder.mLableSec.setText(tags.get(1));
-                        }
-                        if (tags.size() > 2) {
-                            itemViewHolder.mLableThi.setVisibility(View.VISIBLE);
-                            itemViewHolder.mLableThi.setText(tags.get(2));
+                List<String> tags = StringUtil.stringToIntList(clientUser.personality_tag);
+                List<String> pTags = new ArrayList<>(3);
+                for (int i = 0; i < tags.size(); i++) {
+                    if ("".equals(tags.get(i)) || " ".equals(tags.get(i))) {
+                        tags.remove(i);
+                    } else {
+                        pTags.add(tags.get(i));
+                        if (pTags.size() == 3) {
+                            break;
                         }
                     }
-                } else {
-                    itemViewHolder.mLableFirst.setText(clientUser.personality_tag);
                 }
+                itemViewHolder.tag_layout.setTags(pTags);
             }
         }
     }
@@ -143,6 +136,9 @@ public class FindLoveAdapter extends
     }
 
     public ClientUser getItem(int position){
+        if (mClientUsers == null || mClientUsers.size() < 1) {
+            return null;
+        }
         return mClientUsers == null ? null : mClientUsers.get(position);
     }
 
@@ -164,12 +160,8 @@ public class FindLoveAdapter extends
         TextView constellation;
         TextView distance;
         TextView signature;
-        TextView mLableFirst;
-        TextView mLableSec;
-        TextView mLableThi;
-        ImageView mLove;
         ImageView mSexImg;
-        GoodView mGoodView;
+        TagLayout tag_layout;
         public ItemViewHolder(View itemView) {
             super(itemView);
             portrait = (SimpleDraweeView) itemView.findViewById(R.id.portrait);
@@ -180,56 +172,15 @@ public class FindLoveAdapter extends
             constellation = (TextView) itemView.findViewById(R.id.constellation);
             distance = (TextView) itemView.findViewById(R.id.distance);
             signature = (TextView) itemView.findViewById(R.id.signature);
-            mLove = (ImageView) itemView.findViewById(R.id.iv_love);
             mSexImg = (ImageView) itemView.findViewById(R.id.sex_img);
-            mLableFirst = (TextView) itemView.findViewById(R.id.lable_1);
-            mLableSec = (TextView) itemView.findViewById(R.id.lable_2);
-            mLableThi = (TextView) itemView.findViewById(R.id.lable_3);
+            tag_layout = (TagLayout) itemView.findViewById(R.id.tag_layout);
             itemView.setOnClickListener(this);
-            mLove.setOnClickListener(this);
-            mGoodView = new GoodView(mContext);
         }
 
         @Override
         public void onClick(View v) {
-            switch (v.getId()){
-                case R.id.iv_love :
-                    int position = getAdapterPosition();
-                    new SendGreetTask().request(mClientUsers.get(position).userId);
-                    new AddLoveTask().request(mClientUsers.get(position).userId);
-                    break;
-                default :
-                    if(mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(v, getAdapterPosition());
-                    }
-                    break;
-            }
-        }
-
-        class SendGreetTask extends SendGreetRequest {
-
-            @Override
-            public void onPostExecute(String s) {
-//                ToastUtil.showMessage(s);
-                mLove.setImageResource(R.mipmap.love_focused);
-                mGoodView.setText(s);
-                mGoodView.show(mLove);
-                mGoodView.setImage(R.mipmap.love_focused);
-            }
-
-            @Override
-            public void onErrorExecute(String error) {
-                ToastUtil.showMessage(error);
-            }
-        }
-
-        class AddLoveTask extends AddLoveRequest {
-            @Override
-            public void onPostExecute(String s) {
-            }
-
-            @Override
-            public void onErrorExecute(String error) {
+            if(mOnItemClickListener != null) {
+                mOnItemClickListener.onItemClick(v, getAdapterPosition());
             }
         }
     }

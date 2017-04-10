@@ -90,6 +90,12 @@ public class PreferencesUtils {
 	public static final String SETTINGS_RL_EARPIECE_PLAY_VOICE = "com.cyanbird.lljy_earpiece_play_voice";
 	/** 极光推送设置别名是否成功*/
 	public static final String SETTINGS_JPUSH_SET_ALIAS = "com.cyanbird.lljy_jpush_set_alias";
+	/** 抽奖次数*/
+	public static final String SETTINGS_REWARD_COUNT = "com.cyanbird.lljy_reward_count";
+	/**经度**/
+	public static final String SETTINGS_LATITUDE = "com.cyanbird.lljy_latitude";
+	/**纬度**/
+	public static final String SETTINGS_LONGITUDE = "com.cyanbird.lljy_longitude";
 
 	/**
 	 * 获取RL账号
@@ -970,6 +976,53 @@ public class PreferencesUtils {
 		SharedPreferences sp = PreferenceManager
 				.getDefaultSharedPreferences(context);
 		sp.edit().putBoolean(SETTINGS_JPUSH_SET_ALIAS, isSuccess).commit();
+	}
+
+	/**
+	 *
+	 * 抽奖次数
+	 * @param context
+	 * @return
+	 */
+	public static int getRewardCount(final Context context) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		return sp.getInt(SETTINGS_REWARD_COUNT, 0);
+	}
+
+	/**
+	 * 保存抽奖次数
+	 * @param context
+	 */
+	public static void setRewardCount(final Context context, final int count) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		sp.edit().putInt(SETTINGS_REWARD_COUNT, count).commit();
+	}
+
+
+	public static String getLatitude(final Context context) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		return sp.getString(SETTINGS_LATITUDE, "");
+	}
+
+	public static void setLatitude(final Context context, final String latitude) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		sp.edit().putString(SETTINGS_LATITUDE, latitude).commit();
+	}
+
+	public static String getLongitude(final Context context) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		return sp.getString(SETTINGS_LONGITUDE, "");
+	}
+
+	public static void setLongitude(final Context context, final String longitude) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		sp.edit().putString(SETTINGS_LONGITUDE, longitude).commit();
 	}
 
 }

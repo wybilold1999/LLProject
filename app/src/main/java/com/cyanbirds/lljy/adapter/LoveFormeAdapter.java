@@ -51,10 +51,8 @@ public class LoveFormeAdapter extends RecyclerView.Adapter<LoveFormeAdapter.View
             holder.mSexImg.setImageResource(R.mipmap.list_female);
         }
         holder.user_name.setText(loveModel.nickname);
-        holder.marray_state.setText(loveModel.emotionStatus);
         holder.constellation.setText(loveModel.constellation);
         holder.signature.setText(loveModel.signature);
-        holder.distance.setText(loveModel.distance + "公里");
         if(loveModel.isVip && AppManager.getClientUser().isShowVip){
             holder.mIsVip.setVisibility(View.VISIBLE);
         } else {
@@ -71,10 +69,8 @@ public class LoveFormeAdapter extends RecyclerView.Adapter<LoveFormeAdapter.View
         SimpleDraweeView portrait;
         TextView user_name;
         TextView age;
-        TextView marray_state;
         TextView constellation;
         TextView signature;
-        TextView distance;
         ImageView mIsVip;
         ImageView mSexImg;
         public ViewHolder(View itemView) {
@@ -82,10 +78,8 @@ public class LoveFormeAdapter extends RecyclerView.Adapter<LoveFormeAdapter.View
             portrait = (SimpleDraweeView) itemView.findViewById(R.id.portrait);
             user_name = (TextView) itemView.findViewById(R.id.user_name);
             age = (TextView) itemView.findViewById(R.id.age);
-            marray_state = (TextView) itemView.findViewById(R.id.marray_state);
             constellation = (TextView) itemView.findViewById(R.id.constellation);
             signature = (TextView) itemView.findViewById(R.id.signature);
-            distance = (TextView) itemView.findViewById(R.id.distance);
             mIsVip = (ImageView) itemView.findViewById(R.id.is_vip);
             mSexImg = (ImageView) itemView.findViewById(R.id.sex_img);
             itemView.setOnClickListener(this);

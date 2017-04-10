@@ -44,25 +44,14 @@ public class MyAttentionAdapter extends RecyclerView.Adapter<MyAttentionAdapter.
         }
         holder.portrait.setImageURI(Uri.parse(followModel.faceUrl));
         holder.age.setText(followModel.age);
-        /*Drawable drawable;
-        if ("男".equals(followModel.sex)) {
-            drawable = mContext.getResources().getDrawable(R.mipmap.list_male);
-        } else {
-            drawable = mContext.getResources().getDrawable(R.mipmap.list_female);
-        }
-        /// 这一步必须要做,否则不会显示.
-        drawable.setBounds(0, 0, 22, 22);
-        holder.age.setCompoundDrawables(drawable,null,null,null);*/
         if ("男".equals(followModel.sex)) {
             holder.mSexImg.setImageResource(R.mipmap.list_male);
         } else {
             holder.mSexImg.setImageResource(R.mipmap.list_female);
         }
         holder.user_name.setText(followModel.nickname);
-        holder.marray_state.setText(followModel.emotionStatus);
         holder.constellation.setText(followModel.constellation);
         holder.signature.setText(followModel.signature);
-        holder.distance.setText(followModel.distance + "公里");
         if(followModel.isVip && AppManager.getClientUser().isShowVip){
             holder.mIsVip.setVisibility(View.VISIBLE);
         } else {
@@ -83,10 +72,8 @@ public class MyAttentionAdapter extends RecyclerView.Adapter<MyAttentionAdapter.
         SimpleDraweeView portrait;
         TextView user_name;
         TextView age;
-        TextView marray_state;
         TextView constellation;
         TextView signature;
-        TextView distance;
         ImageView mIsVip;
         ImageView mSexImg;
         public ViewHolder(View itemView) {
@@ -94,10 +81,8 @@ public class MyAttentionAdapter extends RecyclerView.Adapter<MyAttentionAdapter.
             portrait = (SimpleDraweeView) itemView.findViewById(R.id.portrait);
             user_name = (TextView) itemView.findViewById(R.id.user_name);
             age = (TextView) itemView.findViewById(R.id.age);
-            marray_state = (TextView) itemView.findViewById(R.id.marray_state);
             constellation = (TextView) itemView.findViewById(R.id.constellation);
             signature = (TextView) itemView.findViewById(R.id.signature);
-            distance = (TextView) itemView.findViewById(R.id.distance);
             mIsVip = (ImageView) itemView.findViewById(R.id.is_vip);
             mSexImg = (ImageView) itemView.findViewById(R.id.sex_img);
             itemView.setOnClickListener(this);

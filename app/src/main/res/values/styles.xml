@@ -78,4 +78,27 @@
         <item name="android:textSize">18sp</item>
     </style>
 
+    <style name="TagLayout.custom">
+        <item name="tag_layout_mode">normal</item>
+        <item name="tag_layout_shape">arc</item>
+        <item name="tag_layout_random_color">true</item>
+        <item name="tag_view_text_color">@android:color/white</item>
+        <item name="tag_view_text_size">10</item>
+        <item name="tag_view_border_width">0dp</item>
+        <item name="tag_view_vertical_padding">3dp</item>
+        <item name="tag_view_horizontal_padding">2dp</item>
+        <item name="tag_layout_bg_color">@android:color/transparent</item>
+        <item name="tag_layout_border_color">@android:color/transparent</item>
+    </style>
+
+    <style name="TagLayout.custom.personal">
+        <item name="tag_layout_mode">normal</item>
+        <item name="tag_layout_shape">arc</item>
+        <item name="tag_layout_random_color">false</item>
+        <item name="tag_view_bg_color">#fff</item>
+        <item name="tag_view_vertical_padding">2dp</item>
+        <item name="tag_view_horizontal_padding">14dp</item>
+        <item name="tag_view_text_size">10</item>
+    </style>
+
 </resources>
