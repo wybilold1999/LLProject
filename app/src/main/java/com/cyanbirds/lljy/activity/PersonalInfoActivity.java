@@ -286,6 +286,8 @@ public class PersonalInfoActivity extends BaseActivity {
 	private void setUserInfoAndValue(ClientUser clientUser) {
 		Bundle personBundle = new Bundle();
 		personBundle.putSerializable(ValueKey.ACCOUNT, clientUser);
+		personBundle.putString(ValueKey.LATITUDE, clientUser.latitude);
+		personBundle.putString(ValueKey.LONGITUDE, clientUser.longitude);
 		personalFragment.setArguments(personBundle);
 
 		Bundle dynamicBundle = new Bundle();
