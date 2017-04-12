@@ -147,11 +147,12 @@
         android:layout_marginBottom="60dp"
         android:src="@mipmap/ic_public"
         android:visibility="gone"/>
-    
+
     <LinearLayout
         android:id="@+id/bottom_layout"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:background="@android:color/white"
+        android:layout_height="44dp"
         android:orientation="horizontal"
         android:layout_gravity="bottom">
 
@@ -161,12 +162,14 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:clickable="true"
-            android:background="@drawable/button_selector"
+            android:background="@drawable/bottom_text_bg"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:layout_marginLeft="10dp"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical|center_horizontal"
-            android:drawableRight="@mipmap/split"
             android:text="@string/gift"
-            android:textColor="@color/gray_text"
+            android:textColor="@color/colorPrimary"
             android:textSize="16sp"/>
 
         <TextView
@@ -174,13 +177,15 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:layout_marginLeft="10dp"
             android:clickable="true"
-            android:background="@drawable/button_selector"
+            android:background="@drawable/bottom_text_bg"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical|center_horizontal"
-            android:drawableRight="@mipmap/split"
             android:text="@string/like"
-            android:textColor="@color/gray_text"
+            android:textColor="@color/colorPrimary"
             android:textSize="16sp"/>
 
         <TextView
@@ -188,26 +193,32 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:layout_marginLeft="10dp"
             android:clickable="true"
-            android:drawableRight="@mipmap/split"
-            android:background="@drawable/button_selector"
+            android:background="@drawable/bottom_text_bg"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical|center_horizontal"
             android:text="@string/message"
-            android:textColor="@color/gray_text"
+            android:textColor="@color/colorPrimary"
             android:textSize="16sp"/>
 
         <TextView
             android:id="@+id/attention"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:background="@drawable/button_selector"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:clickable="true"
+            android:background="@drawable/bottom_text_bg"
+            android:layout_gravity="center_vertical"
             android:gravity="center_vertical|center_horizontal"
             android:text="@string/attention"
-            android:textColor="@color/gray_text"
+            android:textColor="@color/colorPrimary"
             android:textSize="16sp"/>
     </LinearLayout>
 
