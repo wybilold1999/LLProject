@@ -109,4 +109,7 @@ public class ClientUser implements Serializable{
      */
     public Boolean isShowVideo; //视频
 
+    public String latitude = "";
+    public String longitude = "";
+
 }

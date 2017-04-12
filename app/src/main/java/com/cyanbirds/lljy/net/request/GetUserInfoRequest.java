@@ -96,6 +96,8 @@ public class GetUserInfoRequest extends ResultPostExecute<ClientUser> {
             clientUser.conception = data.get("conception").getAsString();
             clientUser.imgUrls = data.get("picturesUrls").getAsString();
             clientUser.gifts = data.get("gifts").getAsString();
+            clientUser.latitude = data.get("latitude").getAsString();
+            clientUser.longitude = data.get("longitude").getAsString();
             onPostExecute(clientUser);
         } catch (Exception e) {
             onErrorExecute(CSApplication.getInstance().getResources()
