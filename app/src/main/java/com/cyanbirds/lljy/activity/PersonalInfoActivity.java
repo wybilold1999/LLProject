@@ -219,11 +219,9 @@ public class PersonalInfoActivity extends BaseActivity {
 		@Override
 		public void onPostExecute(String s) {
 			if (s.equals("已关注")) {
-				mAttention.setTextColor(getResources().getColor(R.color.colorPrimary));
 				mAttention.setText(R.string.attentioned);
 				ToastUtil.showMessage(R.string.attention_success);
 			} else {
-				mAttention.setTextColor(getResources().getColor(R.color.gray_text));
 				mAttention.setText(R.string.attention);
 				ToastUtil.showMessage(R.string.cancle_attention);
 			}
@@ -244,10 +242,8 @@ public class PersonalInfoActivity extends BaseActivity {
 			if (s.equals("已喜欢")) {
 				mLove.setText(s);
 				ToastUtil.showMessage(R.string.like_success);
-				mLove.setTextColor(getResources().getColor(R.color.colorPrimary));
 			} else {
 				mLove.setText(R.string.like);
-				mLove.setTextColor(getResources().getColor(R.color.gray_text));
 			}
 		}
 
