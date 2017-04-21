@@ -1,13 +1,15 @@
 package com.cyanbirds.lljy.activity;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.graphics.Bitmap.CompressFormat;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.widget.Toolbar;
@@ -169,6 +171,18 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 	 * 剪裁图片返回
 	 */
 	public final static int PHOTO_CUT_RESULT = 106;
+	/**
+	 * 读写文件夹
+	 */
+	private final int REQUEST_PERMISSION_WRITE = 1000;
+	/**
+	 * 跳转设置界面
+	 */
+	private final int REQUEST_PERMISSION_SETTING = 10001;
+	/**
+	 * 是否拥有读写权限
+	 */
+	private boolean isWritePersimmion = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -445,7 +459,12 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 					public void onClick(DialogInterface dialog, int which) {
 						switch (which) {
 							case 0:
-								openCamera();
+								if (AppManager.checkPermission(ModifyUserInfoActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUEST_PERMISSION_WRITE)) {
+									isWritePersimmion = true;
+									if (AppManager.checkPermission(ModifyUserInfoActivity.this, Manifest.permission.CAMERA, CAMERA_RESULT)) {
+										openCamera();
+									}
+								}
 								break;
 							case 1:
 								openAlbums();
@@ -891,8 +910,9 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 	 * 打开相机
 	 */
 	private void openCamera() {
-		try {
-			Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+		hideSoftKeyboard();
+		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		if (intent.resolveActivity(getPackageManager())!=null){
 			String mPhotoDirPath = Environment
 					.getExternalStoragePublicDirectory(
 							Environment.DIRECTORY_DCIM).getPath();
@@ -909,11 +929,16 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 					e.printStackTrace();
 				}
 			}
-			mPhotoOnSDCardUri = Uri.fromFile(mPhotoFile);
-			intent.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoOnSDCardUri);
-			startActivityForResult(intent, CAMERA_RESULT);
-		} catch (Exception e) {
-			e.printStackTrace();
+			if (mPhotoFile != null) {
+				//FileProvider 是一个特殊的 ContentProvider 的子类，
+				//它使用 content:// Uri 代替了 file:/// Uri. ，更便利而且安全的为另一个app分享文件
+				mPhotoOnSDCardUri = FileProvider.getUriForFile(this,
+						"com.cyanbirds.tanlove.fileProvider",
+						mPhotoFile);
+				intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //添加这一句表示对目标应用临时授权该Uri所代表的文件
+				intent.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoOnSDCardUri);
+				startActivityForResult(intent, CAMERA_RESULT);
+			}
 		}
 	}
 
@@ -946,17 +971,14 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 					mPhotoOnSDCardUri);
 			sendBroadcast(intent);
 			if (mPhotoOnSDCardUri != null) {
-				File file = new File(mPhotoOnSDCardUri.getPath());
-				if (mPhotoOnSDCardUri != null && file.exists()) {
-					Uri uri = Uri.parse("file://" + file.getPath());
-					cutPhoto(Uri
-							.parse("file://" + FileUtils.getPath(this, uri)));
+				File file = new File(mPhotoPath);
+				if (file.exists()) {
+					cutPhoto(file);
 				}
 			}
 		} else if (resultCode == RESULT_OK && requestCode == ALBUMS_RESULT) {
 			Uri originalUri = data.getData();
-			cutPhoto(Uri
-					.parse("file://" + FileUtils.getPath(this, originalUri)));
+			cutPhoto(new File(FileUtils.getPath(this, originalUri)));
 		} else if (resultCode == RESULT_OK && requestCode == PHOTO_CUT_RESULT) {
 			mPortraitUri = data.getData();
 			if (mPortraitUri == null && mCutFile != null) {
@@ -1011,20 +1033,9 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 	/**
 	 * 剪切图片
 	 *
-	 * @param uri
+	 * @param file
 	 */
-	private void cutPhoto(Uri uri) {
-		Intent intent = new Intent("com.android.camera.action.CROP");
-		intent.setDataAndType(uri, "image/*");
-		intent.putExtra("crop", "true");
-		intent.putExtra("outputX", 500);
-		intent.putExtra("outputY", 500);
-		intent.putExtra("aspectX", 1);
-		intent.putExtra("aspectY", 1);
-		intent.putExtra("scale", true);
-		intent.putExtra("noFaceDetection", true);
-		intent.putExtra("outputFormat", CompressFormat.JPEG.toString());
-
+	private void cutPhoto(File file) {
 		mCutFile = new File(FileAccessorUtils.getImagePathName(),
 				"cutphoto.png");
 		if (!mCutFile.exists()) {
@@ -1034,9 +1045,19 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 				e.printStackTrace();
 			}
 		}
-		Uri ur = Uri.fromFile(mCutFile);
-
-		intent.putExtra(MediaStore.EXTRA_OUTPUT, ur);
+		Uri imageUri=FileProvider.getUriForFile(this, "com.cyanbirds.tanlove.fileProvider", file);//通过FileProvider创建一个content类型的Uri
+		Intent intent = new Intent("com.android.camera.action.CROP");
+		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+		intent.setDataAndType(imageUri, "image/*");
+		intent.putExtra("crop", "true");
+		intent.putExtra("outputX", 500);
+		intent.putExtra("outputY", 500);
+		intent.putExtra("aspectX", 1);
+		intent.putExtra("aspectY", 1);
+		intent.putExtra("scale", true);
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mCutFile));
+		intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+		intent.putExtra("noFaceDetection", true); // no face detection
 		startActivityForResult(intent, PHOTO_CUT_RESULT);
 	}
 
