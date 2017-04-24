@@ -4,11 +4,15 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AlertDialog.Builder;
@@ -1078,5 +1082,67 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 		super.onPause();
 		MobclickAgent.onPageEnd(this.getClass().getName());
 		MobclickAgent.onPause(this);
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		if (requestCode == CAMERA_RESULT) {
+			// 拒绝授权
+			if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+				// 勾选了不再提示
+				if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+					showOpenCameraDialog();
+				} else {
+				}
+			} else if (isWritePersimmion) {
+				openCamera();
+			}
+		} else if (requestCode == REQUEST_PERMISSION_WRITE) {//读写文件夹权限
+			// 拒绝授权
+			if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+				// 勾选了不再提示
+				if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+					showWriteDialog();
+				}
+			} else {
+				isWritePersimmion = true;
+				AppManager.checkPermission(this, Manifest.permission.CAMERA, CAMERA_RESULT);
+			}
+		}
+		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+	}
+
+	private void showOpenCameraDialog(){
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(R.string.open_camera_permission);
+		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+				Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+				Uri uri = Uri.fromParts("package", getPackageName(), null);
+				intent.setData(uri);
+				startActivityForResult(intent, REQUEST_PERMISSION_SETTING);
+
+			}
+		});
+		builder.show();
+	}
+
+	private void showWriteDialog(){
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(R.string.open_write_external);
+		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+				Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+				Uri uri = Uri.fromParts("package", getPackageName(), null);
+				intent.setData(uri);
+				startActivityForResult(intent, REQUEST_PERMISSION_SETTING);
+
+			}
+		});
+		builder.show();
 	}
 }
