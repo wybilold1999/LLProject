@@ -16,7 +16,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -51,7 +50,6 @@ import com.cyanbirds.lljy.manager.NotificationManager;
 import com.cyanbirds.lljy.net.request.GetOSSTokenRequest;
 import com.cyanbirds.lljy.service.MyIntentService;
 import com.cyanbirds.lljy.service.MyPushService;
-import com.cyanbirds.lljy.utils.FileAccessorUtils;
 import com.cyanbirds.lljy.utils.PreferencesUtils;
 import com.cyanbirds.lljy.utils.PushMsgUtil;
 import com.cyanbirds.lljy.utils.ToastUtil;
@@ -60,7 +58,6 @@ import com.umeng.analytics.MobclickAgent;
 import com.xiaomi.mipush.sdk.MiPushClient;
 import com.yuntongxun.ecsdk.ECInitParams;
 
-import java.io.File;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -149,9 +146,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 
 		loadData();
 
-		if (!PreferencesUtils.getAccessLocationStatus(this)) {//还没获取到位置权限
-			AppManager.requestLocationPermission(this);
-		}
+		AppManager.requestLocationPermission(this);
 		requestPermission();
 
 		initLocationClient();
@@ -403,7 +398,6 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 				}
 			} else {
 				initLocationClient();
-				PreferencesUtils.setAccessLocationStatus(this, true);
 			}
 		} else {
 			super.onRequestPermissionsResult(requestCode, permissions, grantResults);

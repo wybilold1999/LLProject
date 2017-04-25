@@ -14,11 +14,9 @@ import android.view.View;
 import com.cyanbirds.lljy.R;
 import com.cyanbirds.lljy.activity.base.BaseActivity;
 import com.cyanbirds.lljy.config.ValueKey;
-import com.cyanbirds.lljy.helper.SDKCoreHelper;
 import com.cyanbirds.lljy.manager.AppManager;
 import com.cyanbirds.lljy.utils.PreferencesUtils;
 import com.umeng.analytics.MobclickAgent;
-import com.yuntongxun.ecsdk.ECInitParams;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -120,8 +118,6 @@ public class EntranceActivity extends BaseActivity {
                     showAccessLocationDialog();
                 }
             }
-        } else {
-            PreferencesUtils.setAccessLocationStatus(this, true);
         }
     }
 
