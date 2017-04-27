@@ -62,16 +62,11 @@ android {
         huawei {}
         sanxing {}
         lianxiang {}
-        liantong {}
         leshi {}
         sj91 {}
         androidmarket {}
         sougou {}
         uc {}
-        sms {}
-        mumayi {}
-        jifeng {}
-        anzhi {}
         jinli {}
         youyi {}
 
