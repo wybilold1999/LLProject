@@ -16,14 +16,12 @@ import com.cyanbirds.lljy.config.AppConstants;
 import com.cyanbirds.lljy.config.ValueKey;
 import com.cyanbirds.lljy.entity.ClientUser;
 import com.cyanbirds.lljy.eventtype.WeinXinEvent;
-import com.cyanbirds.lljy.eventtype.XMEvent;
 import com.cyanbirds.lljy.helper.IMChattingHelper;
 import com.cyanbirds.lljy.manager.AppManager;
 import com.cyanbirds.lljy.net.request.DownloadFileRequest;
 import com.cyanbirds.lljy.net.request.QqLoginRequest;
 import com.cyanbirds.lljy.net.request.UserLoginRequest;
 import com.cyanbirds.lljy.net.request.WXLoginRequest;
-import com.cyanbirds.lljy.net.request.XMLoginRequest;
 import com.cyanbirds.lljy.utils.AESEncryptorUtil;
 import com.cyanbirds.lljy.utils.CheckUtil;
 import com.cyanbirds.lljy.utils.FileAccessorUtils;
@@ -135,41 +133,6 @@ public class LoginActivity extends BaseActivity {
                 req.state = "wechat_sdk_demo_test";
                 CSApplication.api.sendReq(req);
                 break;
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void xmLogin(XMEvent event) {
-        ProgressDialogUtils.getInstance(LoginActivity.this).show(R.string.dialog_request_login);
-        new XMLoginTask().request(event.xmOAuthResults, channelId);
-    }
-
-    public class XMLoginTask extends XMLoginRequest {
-        @Override
-        public void onPostExecute(ClientUser clientUser) {
-            ProgressDialogUtils.getInstance(LoginActivity.this).dismiss();
-            MobclickAgent.onProfileSignIn(String.valueOf(AppManager
-                    .getClientUser().userId));
-            if(!new File(FileAccessorUtils.FACE_IMAGE,
-                    Md5Util.md5(clientUser.face_url) + ".jpg").exists()
-                    && !TextUtils.isEmpty(clientUser.face_url)){
-                new DownloadPortraitTask().request(clientUser.face_url,
-                        FileAccessorUtils.FACE_IMAGE,
-                        Md5Util.md5(clientUser.face_url) + ".jpg");
-            }
-            AppManager.setClientUser(clientUser);
-            AppManager.saveUserInfo();
-            IMChattingHelper.getInstance().sendInitLoginMsg();
-            Intent intent = new Intent();
-            intent.setClass(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            finishAll();
-        }
-
-        @Override
-        public void onErrorExecute(String error) {
-            ProgressDialogUtils.getInstance(LoginActivity.this).dismiss();
-            ToastUtil.showMessage(error);
         }
     }
 
