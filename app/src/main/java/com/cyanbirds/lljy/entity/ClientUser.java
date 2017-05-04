@@ -108,7 +108,6 @@ public class ClientUser implements Serializable{
      * 0:不显示  1：显示
      */
     public Boolean isShowVideo; //视频
-
     /**
      * 0:不显示  1：显示
      */
