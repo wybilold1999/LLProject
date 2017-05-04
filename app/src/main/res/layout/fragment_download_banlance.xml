@@ -160,7 +160,7 @@
 			android:layout_marginRight="30dp"
 			android:layout_marginTop="20dp"
 			fancy:fb_defaultColor="@color/colorPrimary"
-			fancy:fb_focusColor="@android:color/white"
+			fancy:fb_focusColor="@color/colorAccent"
 			fancy:fb_radius="5dp"
 			fancy:fb_text="提现"
 			fancy:fb_textColor="#ffffffff"/>
