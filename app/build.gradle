@@ -8,9 +8,9 @@ android {
     defaultConfig {
         applicationId "com.cyanbirds.lljy"
         minSdkVersion 14
-        targetSdkVersion 25
-        versionCode 5
-        versionName "1.1.5"
+        targetSdkVersion 22
+        versionCode 6
+        versionName "1.1.6"
         multiDexEnabled true
     }
     buildTypes {
