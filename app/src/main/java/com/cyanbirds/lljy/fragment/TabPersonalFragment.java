@@ -583,7 +583,7 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 						.getRegeocodeAddress().getFormatAddress());
 				mAddress = poiItem.getSnippet();
 				mAdress.setText(mAddress);
-				if (AppManager.getClientUser().isShowVip &&
+				if (AppManager.getClientUser().isShowMap &&
 						!TextUtils.isEmpty(clientUser.distance) &&
 						!"0.0".equals(clientUser.distance) &&
 						!TextUtils.isEmpty(mAddress)) {
@@ -600,20 +600,10 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 			} else {
 				mMyLocation.setVisibility(View.GONE);
 				mMapCard.setVisibility(View.GONE);
-//				ToastUtil.showMessage(R.string.no_result);
 			}
-		} else if (rCode == 27) {
-			mMyLocation.setVisibility(View.GONE);
-			mMapCard.setVisibility(View.GONE);
-//			ToastUtil.showMessage(R.string.error_network);
-		} else if (rCode == 32) {
-			mMyLocation.setVisibility(View.GONE);
-			mMapCard.setVisibility(View.GONE);
-//			ToastUtil.showMessage(R.string.error_key);
 		} else {
 			mMyLocation.setVisibility(View.GONE);
 			mMapCard.setVisibility(View.GONE);
-//			ToastUtil.showMessage(getString(R.string.error_other) + rCode);
 		}
 	}
 
