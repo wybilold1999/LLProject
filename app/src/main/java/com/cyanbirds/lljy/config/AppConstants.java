@@ -49,14 +49,6 @@ public class AppConstants {
 	 */
 	public static final String MI_PUSH_APP_KEY = "5391754924557";
 
-	public static final String MI_ACCOUNT_REDIRECT_URI = "http://www.cyanbirds.cn";
-
-	/**
-	 * 个推appid和appkey
-	 */
-	public static final String GETUI_PUSH_APP_ID = "fn4zeTabxU6Z7jbRgm0d19";
-	public static final String GETUI_PUSH_APP_KEY = "lhFmeD04jY7NEqOm6xW7E2";
-
 	/**
 	 * 阿里图片节点
 	 */
