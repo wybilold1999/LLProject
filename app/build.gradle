@@ -61,13 +61,10 @@ android {
         vivo {}
         huawei {}
         sanxing {}
-        lianxiang {}
         leshi {}
         sj91 {}
         androidmarket {}
         sougou {}
-        uc {}
-        jinli {}
         youyi {}
 
 
