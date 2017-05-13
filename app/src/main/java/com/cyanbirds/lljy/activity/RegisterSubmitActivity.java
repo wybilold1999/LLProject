@@ -101,9 +101,11 @@ public class RegisterSubmitActivity extends BaseActivity implements
 		@Override
 		public void onPostExecute(ClientUser clientUser) {
 			ProgressDialogUtils.getInstance(RegisterSubmitActivity.this).dismiss();
+			hideSoftKeyboard();
 			MobclickAgent.onProfileSignIn(String.valueOf(AppManager
 					.getClientUser().userId));
 			clientUser.userPwd = mClientUser.userPwd;
+			clientUser.currentCity = mClientUser.currentCity;
 			AppManager.setClientUser(clientUser);
 			AppManager.saveUserInfo();
 			IMChattingHelper.getInstance().sendInitLoginMsg();

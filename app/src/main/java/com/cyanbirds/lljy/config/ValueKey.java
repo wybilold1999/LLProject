@@ -93,4 +93,6 @@ public class ValueKey {
 	public static final String APK_URL = "apk_url";
 	/** data  **/
 	public static final String DATA = "data";
+	/** LOCATION  **/
+	public static final String LOCATION = "location";
 }

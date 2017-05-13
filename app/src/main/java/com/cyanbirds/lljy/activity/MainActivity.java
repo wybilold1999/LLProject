@@ -48,6 +48,7 @@ import com.cyanbirds.lljy.listener.MessageUnReadListener;
 import com.cyanbirds.lljy.manager.AppManager;
 import com.cyanbirds.lljy.manager.NotificationManager;
 import com.cyanbirds.lljy.net.request.GetOSSTokenRequest;
+import com.cyanbirds.lljy.net.request.UploadCityInfoRequest;
 import com.cyanbirds.lljy.service.MyIntentService;
 import com.cyanbirds.lljy.service.MyPushService;
 import com.cyanbirds.lljy.utils.PreferencesUtils;
@@ -294,6 +295,26 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 		if (aMapLocation != null) {
 			AppManager.getClientUser().latitude = String.valueOf(aMapLocation.getLatitude());
 			AppManager.getClientUser().longitude = String.valueOf(aMapLocation.getLongitude());
+			new UploadCityInfoTask().request(aMapLocation.getCity());
+		}
+	}
+
+	class UploadCityInfoTask extends UploadCityInfoRequest {
+
+		@Override
+		public void onPostExecute(String isShow) {
+			if ("0".equals(isShow)) {
+				AppManager.getClientUser().isShowDownloadVip = false;
+				AppManager.getClientUser().isShowGold = false;
+				AppManager.getClientUser().isShowLovers = false;
+				AppManager.getClientUser().isShowMap = false;
+				AppManager.getClientUser().isShowVideo = false;
+				AppManager.getClientUser().isShowVip = false;
+			}
+		}
+
+		@Override
+		public void onErrorExecute(String error) {
 		}
 	}
 
