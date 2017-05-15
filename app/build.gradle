@@ -9,8 +9,8 @@ android {
         applicationId "com.cyanbirds.lljy"
         minSdkVersion 14
         targetSdkVersion 22
-        versionCode 6
-        versionName "1.1.6"
+        versionCode 7
+        versionName "1.1.7"
         multiDexEnabled true
     }
     buildTypes {
