@@ -39,6 +39,7 @@ import com.cyanbirds.lljy.adapter.PlaceListAdapter;
 import com.cyanbirds.lljy.config.ValueKey;
 import com.cyanbirds.lljy.manager.AppManager;
 import com.cyanbirds.lljy.ui.widget.CircularProgress;
+import com.cyanbirds.lljy.ui.widget.WrapperLinearLayoutManager;
 import com.cyanbirds.lljy.utils.FileAccessorUtils;
 import com.cyanbirds.lljy.utils.Md5Util;
 import com.cyanbirds.lljy.utils.ToastUtil;
@@ -131,7 +132,7 @@ public class ShareLocationActivity extends BaseActivity implements
 		mCurrentLocation = (ImageButton) findViewById(R.id.current_location);
 		mRecyclerView = (RecyclerView) findViewById(R.id.place_list);
 		mProgressBar = (CircularProgress) findViewById(R.id.progress_bar);
-		mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+		mRecyclerView.setLayoutManager(new WrapperLinearLayoutManager(this));
 		mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 	}
 

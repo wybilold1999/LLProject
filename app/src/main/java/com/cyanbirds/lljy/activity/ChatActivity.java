@@ -65,6 +65,7 @@ import com.cyanbirds.lljy.listener.MessageStatusReportListener;
 import com.cyanbirds.lljy.listener.MessageStatusReportListener.OnMessageStatusReport;
 import com.cyanbirds.lljy.manager.AppManager;
 import com.cyanbirds.lljy.manager.NotificationManager;
+import com.cyanbirds.lljy.ui.widget.WrapperLinearLayoutManager;
 import com.cyanbirds.lljy.utils.EmoticonUtil;
 import com.cyanbirds.lljy.utils.FileAccessorUtils;
 import com.cyanbirds.lljy.utils.FileUtils;
@@ -190,7 +191,7 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 
 	private void setupView() {
 		mMessageRecyclerView = (RecyclerView) findViewById(R.id.message_recycler_view);
-		mLinearLayoutManager = new LinearLayoutManager(this);
+		mLinearLayoutManager = new WrapperLinearLayoutManager(this);
 		mLinearLayoutManager.setOrientation(LinearLayout.VERTICAL);
 		mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
 
@@ -212,7 +213,7 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 		mEmoticonPageIndicator = (LinearLayout) findViewById(R.id.emoticon_page_indicator);
 
 		mEmoticonRecyclerview = (RecyclerView) findViewById(R.id.emoticon_recyclerview);
-		LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+		LinearLayoutManager layoutManager = new WrapperLinearLayoutManager(this);
 		layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 		mEmoticonRecyclerview.setLayoutManager(layoutManager);
 

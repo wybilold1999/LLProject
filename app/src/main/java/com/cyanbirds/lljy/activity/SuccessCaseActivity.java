@@ -13,6 +13,7 @@ import com.cyanbirds.lljy.activity.base.BaseActivity;
 import com.cyanbirds.lljy.adapter.SuccessCaseAdapter;
 import com.cyanbirds.lljy.entity.SuccessCase;
 import com.cyanbirds.lljy.net.request.GetSuccessCaseListRequest;
+import com.cyanbirds.lljy.ui.widget.WrapperLinearLayoutManager;
 import com.cyanbirds.lljy.utils.ToastUtil;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.umeng.analytics.MobclickAgent;
@@ -56,7 +57,7 @@ public class SuccessCaseActivity extends BaseActivity {
 		mImage.setImageURI(Uri.parse("http://cdn.wmlover.cn/style/assets/wap/ID11/banner.jpg"));
 		mScrollView.smoothScrollTo(0, 0);
 
-		layoutManager = new LinearLayoutManager(
+		layoutManager = new WrapperLinearLayoutManager(
 				this, LinearLayoutManager.VERTICAL, false);
 		layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 		mRecyclerView.setLayoutManager(layoutManager);

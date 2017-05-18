@@ -36,6 +36,7 @@ import com.cyanbirds.lljy.net.request.GetMemberBuyListRequest;
 import com.cyanbirds.lljy.net.request.GetPayResultRequest;
 import com.cyanbirds.lljy.net.request.GetUserNameRequest;
 import com.cyanbirds.lljy.ui.widget.DividerItemDecoration;
+import com.cyanbirds.lljy.ui.widget.WrapperLinearLayoutManager;
 import com.cyanbirds.lljy.utils.DensityUtil;
 import com.cyanbirds.lljy.utils.ToastUtil;
 import com.sunfusheng.marqueeview.MarqueeView;
@@ -141,7 +142,7 @@ public class VipCenterActivity extends BaseActivity {
 	}
 
 	private void setupView() {
-		LinearLayoutManager layoutManager = new LinearLayoutManager(
+		LinearLayoutManager layoutManager = new WrapperLinearLayoutManager(
 				this, LinearLayoutManager.VERTICAL, false);
 		layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 		mRecyclerView.setLayoutManager(layoutManager);

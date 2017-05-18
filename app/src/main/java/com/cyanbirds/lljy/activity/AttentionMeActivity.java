@@ -19,6 +19,7 @@ import com.cyanbirds.lljy.manager.AppManager;
 import com.cyanbirds.lljy.net.request.FollowListRequest;
 import com.cyanbirds.lljy.ui.widget.CircularProgress;
 import com.cyanbirds.lljy.ui.widget.DividerItemDecoration;
+import com.cyanbirds.lljy.ui.widget.WrapperLinearLayoutManager;
 import com.cyanbirds.lljy.utils.DensityUtil;
 import com.umeng.analytics.MobclickAgent;
 
@@ -57,7 +58,7 @@ public class AttentionMeActivity extends BaseActivity {
         mCircularProgress = (CircularProgress) findViewById(R.id.progress_bar);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         mNoUserinfo = (TextView) findViewById(R.id.info);
-        LinearLayoutManager manager = new LinearLayoutManager(this);
+        LinearLayoutManager manager = new WrapperLinearLayoutManager(this);
         manager.setOrientation(LinearLayout.VERTICAL);
         mRecyclerView.setLayoutManager(manager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());

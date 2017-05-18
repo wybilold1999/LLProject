@@ -35,6 +35,7 @@ import com.cyanbirds.lljy.net.request.GetAliPayOrderInfoRequest;
 import com.cyanbirds.lljy.net.request.GetMemberBuyListRequest;
 import com.cyanbirds.lljy.net.request.GetPayResultRequest;
 import com.cyanbirds.lljy.ui.widget.DividerItemDecoration;
+import com.cyanbirds.lljy.ui.widget.WrapperLinearLayoutManager;
 import com.cyanbirds.lljy.utils.DensityUtil;
 import com.cyanbirds.lljy.utils.ToastUtil;
 import com.tencent.mm.sdk.modelpay.PayReq;
@@ -130,7 +131,7 @@ public class MyGoldActivity extends BaseActivity {
 	}
 	
 	private void setupView() {
-		LinearLayoutManager manager = new LinearLayoutManager(this);
+		LinearLayoutManager manager = new WrapperLinearLayoutManager(this);
 		manager.setOrientation(LinearLayout.VERTICAL);
 		mRecyclerView.setLayoutManager(manager);
 		mRecyclerView.setItemAnimator(new DefaultItemAnimator());

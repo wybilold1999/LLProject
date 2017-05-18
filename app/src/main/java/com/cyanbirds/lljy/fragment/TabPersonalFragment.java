@@ -42,6 +42,7 @@ import com.cyanbirds.lljy.entity.ClientUser;
 import com.cyanbirds.lljy.eventtype.UserEvent;
 import com.cyanbirds.lljy.manager.AppManager;
 import com.cyanbirds.lljy.net.request.UpdateGoldRequest;
+import com.cyanbirds.lljy.ui.widget.WrapperLinearLayoutManager;
 import com.cyanbirds.lljy.utils.StringUtil;
 import com.dl7.tag.TagLayout;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -230,13 +231,13 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 	}
 
 	private void setupViews() {
-		layoutManager = new LinearLayoutManager(
+		layoutManager = new WrapperLinearLayoutManager(
 				getActivity(), LinearLayoutManager.HORIZONTAL, false);
 		layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 		mRecyclerview.setLayoutManager(layoutManager);
 		mRecyclerview.setItemAnimator(new DefaultItemAnimator());
 
-		mGiftLayoutManager = new LinearLayoutManager(
+		mGiftLayoutManager = new WrapperLinearLayoutManager(
 				getActivity(), LinearLayoutManager.HORIZONTAL, false);
 		mGiftLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 		mGiftRecyclerview.setLayoutManager(mGiftLayoutManager);
