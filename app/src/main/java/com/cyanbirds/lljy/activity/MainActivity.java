@@ -146,6 +146,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 				initLocationClient();
 
 				loadData();
+
 			}
 		});
 
