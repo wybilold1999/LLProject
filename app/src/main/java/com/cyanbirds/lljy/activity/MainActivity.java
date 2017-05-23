@@ -37,7 +37,9 @@ import com.cyanbirds.lljy.activity.base.BaseActivity;
 import com.cyanbirds.lljy.config.AppConstants;
 import com.cyanbirds.lljy.config.ValueKey;
 import com.cyanbirds.lljy.db.ConversationSqlManager;
+import com.cyanbirds.lljy.entity.CityInfo;
 import com.cyanbirds.lljy.entity.FederationToken;
+import com.cyanbirds.lljy.eventtype.LocationEvent;
 import com.cyanbirds.lljy.fragment.FoundFragment;
 import com.cyanbirds.lljy.fragment.HomeLoveFragment;
 import com.cyanbirds.lljy.fragment.MessageFragment;
@@ -47,6 +49,7 @@ import com.cyanbirds.lljy.helper.SDKCoreHelper;
 import com.cyanbirds.lljy.listener.MessageUnReadListener;
 import com.cyanbirds.lljy.manager.AppManager;
 import com.cyanbirds.lljy.manager.NotificationManager;
+import com.cyanbirds.lljy.net.request.GetCityInfoRequest;
 import com.cyanbirds.lljy.net.request.GetOSSTokenRequest;
 import com.cyanbirds.lljy.net.request.UploadCityInfoRequest;
 import com.cyanbirds.lljy.service.MyIntentService;
@@ -58,6 +61,8 @@ import com.igexin.sdk.PushManager;
 import com.umeng.analytics.MobclickAgent;
 import com.xiaomi.mipush.sdk.MiPushClient;
 import com.yuntongxun.ecsdk.ECInitParams;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -84,6 +89,9 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 	private AMapLocationClientOption mLocationOption;
 	private AMapLocationClient mlocationClient;
 	private boolean isSecondAccess = false;
+
+	private String curLat;
+	private String curLon;
 
 	private final Handler mHandler = new Handler() {
 		@Override
@@ -125,6 +133,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+		new GetCityInfoTask().request();
 		setupViews();
 		setupEvent();
 		initOSS();
@@ -299,7 +308,36 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 			new UploadCityInfoTask().request(aMapLocation.getCity(),
 					AppManager.getClientUser().latitude, AppManager.getClientUser().longitude);
 		} else {
-			new UploadCityInfoTask().request(AppManager.getClientUser().currentCity, null, null);
+			new UploadCityInfoTask().request(AppManager.getClientUser().currentCity, curLat, curLon);
+		}
+	}
+
+	/**
+	 * 获取用户所在城市
+	 */
+	class GetCityInfoTask extends GetCityInfoRequest {
+
+		@Override
+		public void onPostExecute(CityInfo cityInfo) {
+			if (cityInfo != null) {
+				try {
+					String[] rectangle = cityInfo.rectangle.split(";");
+					String[] leftBottom = rectangle[0].split(",");
+					String[] rightTop = rectangle[1].split(",");
+
+					double lat = Double.parseDouble(leftBottom[1]) + (Double.parseDouble(rightTop[1]) - Double.parseDouble(leftBottom[1])) / 5;
+					curLat = String.valueOf(lat);
+
+					double lon = Double.parseDouble(leftBottom[0]) + (Double.parseDouble(rightTop[0]) - Double.parseDouble(leftBottom[0])) / 5;
+					curLon = String.valueOf(lon);
+				} catch (Exception e) {
+
+				}
+			}
+		}
+
+		@Override
+		public void onErrorExecute(String error) {
 		}
 	}
 
