@@ -73,7 +73,11 @@ public class AttentionMeActivity extends BaseActivity {
     }
 
     private void setupData(){
-        if (AppManager.getClientUser().is_vip) {
+        if (AppManager.getClientUser().isShowVip) {
+            if (AppManager.getClientUser().is_vip) {
+                pageSize = 200;
+            }
+        } else {
             pageSize = 200;
         }
         mFollowModels = new ArrayList<>();
