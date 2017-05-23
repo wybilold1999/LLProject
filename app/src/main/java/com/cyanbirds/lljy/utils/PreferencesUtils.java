@@ -92,7 +92,7 @@ public class PreferencesUtils {
 	public static final String SETTINGS_JPUSH_SET_ALIAS = "com.cyanbird.lljy_jpush_set_alias";
 	/** 抽奖次数*/
 	public static final String SETTINGS_REWARD_COUNT = "com.cyanbird.lljy_reward_count";
-	/** 定位到的城市*/
+	/** webapi请求定位到的城市*/
 	public static final String SETTINGS_CURRENT_CITY = "com.cyanbird.lljy_current_city";
 
 	/**
