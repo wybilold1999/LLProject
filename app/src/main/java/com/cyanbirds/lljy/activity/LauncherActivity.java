@@ -158,6 +158,7 @@ public class LauncherActivity extends Activity {
                 }
                 AppManager.setClientUser(clientUser);
                 AppManager.saveUserInfo();
+                AppManager.getClientUser().loginTime = System.currentTimeMillis();
                 IMChattingHelper.getInstance().sendInitLoginMsg();
             }
         }
