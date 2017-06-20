@@ -70,6 +70,7 @@ import com.cyanbirds.lljy.utils.EmoticonUtil;
 import com.cyanbirds.lljy.utils.FileAccessorUtils;
 import com.cyanbirds.lljy.utils.FileUtils;
 import com.cyanbirds.lljy.utils.ImageUtil;
+import com.cyanbirds.lljy.utils.ToastUtil;
 import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
@@ -680,6 +681,12 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 			if (null != IMChattingHelper.getInstance().getChatManager()) {
 				IMChattingHelper.getInstance().sendLocationMsg(mClientUser, latitude, longitude,
 						address, imagePath);
+			}
+		} else if (resultCode == RESULT_OK && requestCode == SEND_RED_PACKET) {
+			ToastUtil.showMessage("已发送");
+			if (null != IMChattingHelper.getInstance().getChatManager()) {
+				IMChattingHelper.getInstance().sendRedPacketMsg(
+						mClientUser, data.getStringExtra(ValueKey.DATA));
 			}
 		}
 	}

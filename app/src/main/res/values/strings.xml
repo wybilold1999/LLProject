@@ -254,6 +254,7 @@
     <string name="errcode_deny">发送被拒绝</string>
     <string name="errcode_unknown">发送返回</string>
     <string name="delete_conversation">删除该聊天</string>
+    <string name="delete_all_conversation">删除全部聊天</string>
 
     <string name="network_requests_error">网络异常,请检查网络设置</string>
     <string name="data_load_error">数据加载失败</string>
