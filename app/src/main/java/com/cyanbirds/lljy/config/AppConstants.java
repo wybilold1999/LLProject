@@ -10,8 +10,8 @@ package com.cyanbirds.lljy.config;
  */
 public class AppConstants {
 	
-	public static final String BASE_URL = "http://120.76.54.8/LoveLoveServer/";
-//	public static final String BASE_URL = "http://192.168.1.101/LoveLoveServer/";
+//	public static final String BASE_URL = "http://120.76.54.8/LoveLoveServer/";
+	public static final String BASE_URL = "http://192.168.1.100/LoveLoveServer/";
 
 	/**
 	 * 密码加密密匙
