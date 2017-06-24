@@ -91,27 +91,32 @@ public class ClientUser implements Serializable{
     /**
      * 0:不显示  1：显示
      */
-    public Boolean isShowVip; //vip
+    public boolean isShowVip; //vip
     /**
      * 0:不显示  1：显示
      */
-    public Boolean isShowDownloadVip; //下载赚钱
+    public boolean isShowDownloadVip; //下载赚钱
     /**
      * 0:不显示  1：显示
      */
-    public Boolean isShowGold; //金币
+    public boolean isShowGold; //金币
     /**
      * 0:不显示  1：显示
      */
-    public Boolean isShowLovers; //红娘服务
+    public boolean isShowLovers; //红娘服务
     /**
      * 0:不显示  1：显示
      */
-    public Boolean isShowVideo; //地图
+    public boolean isShowVideo; //地图
     /**
      * 0:不显示  1：显示
      */
-    public Boolean isShowMap; //视频
+    public boolean isShowMap; //视频
+    /**
+     * 0:不显示  1：显示
+     */
+    public boolean isShowTd; //跳转到vip还是downloadvip
+
     /**
      * 0:不显示  1：显示
      */
