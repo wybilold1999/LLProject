@@ -140,6 +140,7 @@ public class MyGoldActivity extends BaseActivity {
 		mRecyclerView.addItemDecoration(new DividerItemDecoration(
 				this, LinearLayoutManager.VERTICAL, DensityUtil
 				.dip2px(this, 12), DensityUtil.dip2px(this, 12)));
+		mRecyclerView.setNestedScrollingEnabled(false);
 	}
 	
 	private void setupEvent() {
