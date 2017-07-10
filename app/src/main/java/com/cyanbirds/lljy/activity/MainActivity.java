@@ -39,6 +39,9 @@ import com.cyanbirds.lljy.config.ValueKey;
 import com.cyanbirds.lljy.db.ConversationSqlManager;
 import com.cyanbirds.lljy.entity.CityInfo;
 import com.cyanbirds.lljy.entity.FederationToken;
+import com.cyanbirds.lljy.entity.FollowModel;
+import com.cyanbirds.lljy.entity.LoveModel;
+import com.cyanbirds.lljy.entity.ReceiveGiftModel;
 import com.cyanbirds.lljy.eventtype.LocationEvent;
 import com.cyanbirds.lljy.fragment.FoundFragment;
 import com.cyanbirds.lljy.fragment.HomeLoveFragment;
@@ -49,11 +52,15 @@ import com.cyanbirds.lljy.helper.SDKCoreHelper;
 import com.cyanbirds.lljy.listener.MessageUnReadListener;
 import com.cyanbirds.lljy.manager.AppManager;
 import com.cyanbirds.lljy.manager.NotificationManager;
+import com.cyanbirds.lljy.net.request.FollowListRequest;
 import com.cyanbirds.lljy.net.request.GetCityInfoRequest;
+import com.cyanbirds.lljy.net.request.GetLoveFormeListRequest;
 import com.cyanbirds.lljy.net.request.GetOSSTokenRequest;
+import com.cyanbirds.lljy.net.request.GiftsListRequest;
 import com.cyanbirds.lljy.net.request.UploadCityInfoRequest;
 import com.cyanbirds.lljy.service.MyIntentService;
 import com.cyanbirds.lljy.service.MyPushService;
+import com.cyanbirds.lljy.utils.MsgUtil;
 import com.cyanbirds.lljy.utils.PreferencesUtils;
 import com.cyanbirds.lljy.utils.PushMsgUtil;
 import com.cyanbirds.lljy.utils.ToastUtil;
@@ -65,6 +72,7 @@ import com.yuntongxun.ecsdk.ECInitParams;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import cn.jpush.android.api.JPushInterface;
@@ -122,8 +130,8 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 					R.drawable.tab_tao_love_selector),
 			new TableConfig(R.string.tab_found, FoundFragment.class,
 					R.drawable.tab_found_selector),
-			new TableConfig(R.string.video_show, VideoShowFragment.class,
-					R.drawable.tab_video_selector),
+//			new TableConfig(R.string.video_show, VideoShowFragment.class,
+//					R.drawable.tab_video_selector),
 			new TableConfig(R.string.tab_message, MessageFragment.class,
 					R.drawable.tab_my_message_selector),
 			new TableConfig(R.string.tab_personal, PersonalFragment.class,
@@ -162,6 +170,29 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 
 		AppManager.requestLocationPermission(this);
 		requestPermission();
+
+		if (AppManager.getClientUser().isShowVip) {
+			mHandler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					new GetLoveFormeListTask().request(1, 1);
+				}
+			}, 4500 * 10);
+
+			mHandler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					new MyGiftListTask().request(1, 1);
+				}
+			}, 1500 * 10);
+
+			mHandler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					new FollowListTask().request("followFormeList", 1, 1);
+				}
+			}, 3000 * 10);
+		}
 	}
 
 	/**
@@ -367,15 +398,78 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 	}
 
 	/**
+	 * 获取最近喜欢我的那个人
+	 */
+	class GetLoveFormeListTask extends GetLoveFormeListRequest {
+		@Override
+		public void onPostExecute(List<LoveModel> loveModels) {
+			if(loveModels != null && loveModels.size() > 0) {
+				String lastUserId = PreferencesUtils.getLoveMeUserId(MainActivity.this);
+				if (!lastUserId.equals(String.valueOf(loveModels.get(0).userId))) {
+
+					PreferencesUtils.setLoveMeUserId(
+							MainActivity.this, String.valueOf(loveModels.get(0).userId));
+					Intent intent = new Intent(MainActivity.this, PopupLoveActivity.class);
+					intent.putExtra(ValueKey.DATA, loveModels.get(0));
+					startActivity(intent);
+				}
+			}
+		}
+
+		@Override
+		public void onErrorExecute(String error) {
+		}
+	}
+
+	class MyGiftListTask extends GiftsListRequest {
+		@Override
+		public void onPostExecute(List<ReceiveGiftModel> receiveGiftModels) {
+			if(null != receiveGiftModels && receiveGiftModels.size() > 0){
+				ReceiveGiftModel model = receiveGiftModels.get(0);
+				String lastUserId = PreferencesUtils.getGiftMeUserId(MainActivity.this);
+				if (!lastUserId.equals(String.valueOf(model.userId))) {
+					PreferencesUtils.setGiftMeUserId(
+							MainActivity.this, String.valueOf(model.userId));
+					MsgUtil.sendAttentionOrGiftMsg(String.valueOf(model.userId), model.nickname, model.faceUrl,
+							model.nickname + "给您送了一件礼物");
+				}
+			}
+		}
+
+		@Override
+		public void onErrorExecute(String error) {
+			ToastUtil.showMessage(error);
+		}
+	}
+
+	class FollowListTask extends FollowListRequest {
+		@Override
+		public void onPostExecute(List<FollowModel> followModels) {
+			if(followModels != null && followModels.size() > 0){
+				FollowModel followModel = followModels.get(0);
+				String lastUserId = PreferencesUtils.getAttentionMeUserId(MainActivity.this);
+				if (!lastUserId.equals(String.valueOf(followModel.userId))) {
+					PreferencesUtils.setAttentionMeUserId(
+							MainActivity.this, String.valueOf(followModel.userId));
+					MsgUtil.sendAttentionOrGiftMsg(String.valueOf(followModel.userId),
+							followModel.nickname, followModel.faceUrl,
+							followModel.nickname + "关注了您");
+				}
+			}
+		}
+
+		@Override
+		public void onErrorExecute(String error) {
+		}
+	}
+
+	/**
 	 * 设置视图
 	 */
 	private void setupViews() {
 		mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
 		mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
 		for (int i = 0; i < tableConfig.length; i++) {
-			if (i == 2 && !AppManager.getClientUser().isShowVideo){
-				continue;
-			}
 			mTabHost.addTab(
 					mTabHost.newTabSpec(getString(tableConfig[i].titleId))
 							.setIndicator(getIndicator(i)),
@@ -428,11 +522,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 	 */
 	private void updateConversationUnRead() {
 		View view;
-		if (AppManager.getClientUser().isShowVideo) {
-			view = mTabHost.getTabWidget().getChildTabViewAt(3);
-		} else {
-			view = mTabHost.getTabWidget().getChildTabViewAt(2);
-		}
+		view = mTabHost.getTabWidget().getChildTabViewAt(2);
 		TextView unread_message_num = (TextView) view
 				.findViewById(R.id.unread_message_num);
 
