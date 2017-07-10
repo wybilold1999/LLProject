@@ -23,6 +23,7 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
 import com.cyanbirds.lljy.R;
+import com.cyanbirds.lljy.activity.CardActivity;
 import com.cyanbirds.lljy.activity.PersonalInfoActivity;
 import com.cyanbirds.lljy.adapter.FindLoveAdapter;
 import com.cyanbirds.lljy.config.ValueKey;
@@ -225,7 +226,7 @@ public class FindLoveFragment extends Fragment implements OnRefreshListener, Vie
 
     @Override
     public void onClick(View v) {
-        Intent intent = new Intent(getActivity(), RadarActivity.class);
+        Intent intent = new Intent(getActivity(), CardActivity.class);
         startActivity(intent);
     }
 

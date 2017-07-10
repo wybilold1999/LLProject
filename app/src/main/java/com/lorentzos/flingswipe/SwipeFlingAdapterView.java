@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.FrameLayout;
 
-import com.cyanbirds.tanlove.R;
+import com.cyanbirds.lljy.R;
 
 
 /**
