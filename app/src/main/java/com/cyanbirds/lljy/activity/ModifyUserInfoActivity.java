@@ -318,6 +318,13 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 				mIntrestFlowlayout.setTags(mVals);
 			}
 		}
+		if (AppManager.getClientUser().isShowLovers) {
+			mCardFriend.setVisibility(View.VISIBLE);
+			mTvFriend.setVisibility(View.VISIBLE);
+		} else {
+			mCardFriend.setVisibility(View.GONE);
+			mTvFriend.setVisibility(View.GONE);
+		}
 	}
 
 	@OnClick({R.id.portrait_lay, R.id.nick_name_lay, R.id.sex_lay, R.id.age_lay, R.id.signature_lay, R.id.occupation_type_lay, R.id.education_type_lay, R.id.constellation_lay, R.id.tall_lay, R.id.weight_lay, R.id.married_lay, R.id.purpose_lay, R.id.love_where_lay, R.id.do_what_first_lay, R.id.conception_lay, R.id.lable_flowlayout, R.id.lable_lay, R.id.part_flowlayout, R.id.part_lay, R.id.intrest_flowlayout, R.id.intrest_lay, R.id.weixin_lay, R.id.qq_lay})
