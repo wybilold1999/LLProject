@@ -16,6 +16,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AlertDialog.Builder;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -151,6 +152,10 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 	TextView mQq;
 	@BindView(R.id.qq_lay)
 	RelativeLayout mQqLay;
+	@BindView(R.id.tv_friend)
+	TextView mTvFriend;
+	@BindView(R.id.card_friend)
+	CardView mCardFriend;
 
 	private String mPhotoPath;
 	private File mPhotoFile;
