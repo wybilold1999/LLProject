@@ -18,6 +18,7 @@ import com.cyanbirds.lljy.manager.AppManager;
 import com.cyanbirds.lljy.net.request.RegisterRequest;
 import com.cyanbirds.lljy.utils.AESEncryptorUtil;
 import com.cyanbirds.lljy.utils.CheckUtil;
+import com.cyanbirds.lljy.utils.PreferencesUtils;
 import com.cyanbirds.lljy.utils.ProgressDialogUtils;
 import com.cyanbirds.lljy.utils.ToastUtil;
 import com.umeng.analytics.MobclickAgent;
@@ -109,6 +110,7 @@ public class RegisterSubmitActivity extends BaseActivity implements
 			AppManager.setClientUser(clientUser);
 			AppManager.saveUserInfo();
 			AppManager.getClientUser().loginTime = System.currentTimeMillis();
+			PreferencesUtils.setLoginTime(RegisterSubmitActivity.this, System.currentTimeMillis());
 			IMChattingHelper.getInstance().sendInitLoginMsg();
 			Intent intent = new Intent(RegisterSubmitActivity.this, MainActivity.class);
 			startActivity(intent);

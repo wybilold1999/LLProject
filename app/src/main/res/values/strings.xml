@@ -144,7 +144,8 @@
     <string name="weixin">微信号</string>
     <string name="ali_pay">支付宝支付(推荐)</string>
     <string name="ali_pay_info">使用支付宝支付,额外赠送500金币</string>
-    <string name="pay_info">额外赠送500金币</string>
+    <string name="pay_info_ali">额外赠送%1$s金币</string>
+    <string name="pay_info">立减%1$s元</string>
     <string name="weixin_pay">微信支付</string>
     <string name="send_telephone_fare">(送%1$d元话费)</string>
     <string name="pay_type">请选择支付方式</string>
@@ -315,7 +316,7 @@
     <string name="input_bank">输入收款人开户行</string>
     <string name="input_bank_no">输入开户行银行账号</string>
 
-    <string name="love_name"><Data><![CDATA[<b>%1$s</b> 刚喜欢了您哦！]]></Data></string>
+    <string name="love_name"><Data><![CDATA[<b>%1$s</b> 喜欢了您哦！]]></Data></string>
     <string name="send_msg">发送消息</string>
     <string name="going_find">继续寻觅</string>
 
