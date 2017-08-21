@@ -33,12 +33,12 @@ public class AppConstants {
 	/**
 	 * QQ登录的appid和appkey
 	 */
-	public static final String mAppid = "1105905375";
+	public static String mAppid = "1105905375";
 
 	/**
 	 * 微信登录
 	 */
-	public static final String WEIXIN_ID = "wxa065778bb90b2539";
+	public static String WEIXIN_ID = "wxa065778bb90b2539";
 
 	/**
 	 * 短信
@@ -49,11 +49,11 @@ public class AppConstants {
 	/**
 	 * 小米推送appid
 	 */
-	public static final String MI_PUSH_APP_ID = "2882303761517549557";
+	public static String MI_PUSH_APP_ID = "2882303761517549557";
 	/**
 	 * 小米推送appkey
 	 */
-	public static final String MI_PUSH_APP_KEY = "5391754924557";
+	public static String MI_PUSH_APP_KEY = "5391754924557";
 
 	/**
 	 * 阿里图片节点

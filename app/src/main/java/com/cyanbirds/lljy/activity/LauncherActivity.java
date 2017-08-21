@@ -12,6 +12,7 @@ import com.cyanbirds.lljy.entity.ClientUser;
 import com.cyanbirds.lljy.helper.IMChattingHelper;
 import com.cyanbirds.lljy.manager.AppManager;
 import com.cyanbirds.lljy.net.request.DownloadFileRequest;
+import com.cyanbirds.lljy.net.request.GetIDKeyRequest;
 import com.cyanbirds.lljy.net.request.UserLoginRequest;
 import com.cyanbirds.lljy.utils.FileAccessorUtils;
 import com.cyanbirds.lljy.utils.Md5Util;
@@ -75,6 +76,7 @@ public class LauncherActivity extends Activity {
     };
 
     private void init() {
+        new GetIDKeyRequest().request();
         if (AppManager.isLogin()) {//是否已经登录
             login();
         } else {
