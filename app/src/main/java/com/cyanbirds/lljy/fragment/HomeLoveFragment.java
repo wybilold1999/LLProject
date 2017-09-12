@@ -1,7 +1,6 @@
 package com.cyanbirds.lljy.fragment;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -15,9 +14,7 @@ import android.view.ViewGroup;
 
 import com.cyanbirds.lljy.R;
 import com.cyanbirds.lljy.adapter.HomeTabFragmentAdapter;
-import com.cyanbirds.lljy.config.ValueKey;
 import com.cyanbirds.lljy.manager.AppManager;
-import com.cyanbirds.lljy.service.DownloadUpdateService;
 import com.cyanbirds.lljy.utils.CheckUtil;
 import com.umeng.analytics.MobclickAgent;
 

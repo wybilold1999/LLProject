@@ -294,6 +294,18 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 				} else {
 					mPhotoCard.setVisibility(View.GONE);
 				}*/
+				if (AppManager.getClientUser().isShowLovers) {
+					mGiftText.setVisibility(View.VISIBLE);
+					mGiftCard.setVisibility(View.VISIBLE);
+					mCardFriend.setVisibility(View.VISIBLE);
+					mTvFriend.setVisibility(View.VISIBLE);
+				} else {
+					mGiftText.setVisibility(View.GONE);
+					mGiftCard.setVisibility(View.GONE);
+					mCardFriend.setVisibility(View.GONE);
+					mTvFriend.setVisibility(View.GONE);
+				}
+
 				/**
 				 * 用户收到的礼物
 				 */
@@ -306,17 +318,6 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 				} else {
 					mGiftText.setVisibility(View.GONE);
 					mGiftCard.setVisibility(View.GONE);
-				}
-				if (AppManager.getClientUser().isShowLovers) {
-					mGiftText.setVisibility(View.VISIBLE);
-					mGiftCard.setVisibility(View.VISIBLE);
-					mCardFriend.setVisibility(View.VISIBLE);
-					mTvFriend.setVisibility(View.VISIBLE);
-				} else {
-					mGiftText.setVisibility(View.GONE);
-					mGiftCard.setVisibility(View.GONE);
-					mCardFriend.setVisibility(View.GONE);
-					mTvFriend.setVisibility(View.GONE);
 				}
 			}
 		}

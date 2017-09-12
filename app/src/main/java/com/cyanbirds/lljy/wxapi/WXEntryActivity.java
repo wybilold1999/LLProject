@@ -7,6 +7,7 @@ import android.os.Bundle;
 import com.cyanbirds.lljy.CSApplication;
 import com.cyanbirds.lljy.R;
 import com.cyanbirds.lljy.eventtype.WeinXinEvent;
+import com.cyanbirds.lljy.manager.AppManager;
 import com.cyanbirds.lljy.utils.ToastUtil;
 import com.tencent.mm.sdk.constants.ConstantsAPI;
 import com.tencent.mm.sdk.modelbase.BaseReq;
@@ -33,7 +34,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler{
 	}
 
 	private void handleIntent(Intent paramIntent) {
-		CSApplication.api.handleIntent(paramIntent, this);
+		AppManager.getIWXAPI().handleIntent(paramIntent, this);
 	}
 
 	@Override
