@@ -34,16 +34,19 @@ public class GetIDKeyRequest extends ResultPostExecute<List<IDKey>> {
                     try {
                         parseJson(response.body().string());
                     } catch (IOException e) {
+                        onErrorExecute("");
                         e.printStackTrace();
                     } finally {
                         response.body().close();
                     }
                 } else {
+                    onErrorExecute("");
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                onErrorExecute("");
             }
         });
     }
@@ -57,8 +60,11 @@ public class GetIDKeyRequest extends ResultPostExecute<List<IDKey>> {
                 Gson gson = new Gson();
                 ArrayList<IDKey> idKeys = gson.fromJson(decryptData, listType);
                 onPostExecute(idKeys);
+            } else {
+                onErrorExecute("");
             }
         } catch (Exception e) {
+            onErrorExecute("");
         }
     }
 
