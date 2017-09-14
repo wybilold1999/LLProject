@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.cyanbirds.lljy.CSApplication;
+import com.cyanbirds.lljy.R;
 import com.cyanbirds.lljy.activity.base.BaseActivity;
 import com.cyanbirds.lljy.eventtype.PayEvent;
 import com.cyanbirds.lljy.manager.AppManager;
@@ -59,9 +60,9 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 		if (baseResp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
 			if (baseResp.errCode == 0) {
 				EventBus.getDefault().post(new PayEvent());
-				ToastUtil.showMessage("支付成功");
+				ToastUtil.showMessage(R.string.pay_success);
 			} else if (baseResp.errCode == -1){
-				ToastUtil.showMessage("支付失败,请重试");
+				ToastUtil.showMessage(R.string.pay_wechat_failure);
 			} else {
 				ToastUtil.showMessage("已取消");
 			}
