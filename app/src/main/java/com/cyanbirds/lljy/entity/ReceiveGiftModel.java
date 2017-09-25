@@ -35,7 +35,7 @@ public class ReceiveGiftModel {
 	/** 星座 */
 	public String constellation;
 	/** vip */
-	public Boolean isVip;
+	public boolean isVip;
 	/** 礼物名称 **/
 	public String giftName;
 	/** 礼物url **/

@@ -35,5 +35,5 @@ public class VisitorModel {
 	/** 星座 */
 	public String constellation;
 	/** vip */
-	public Boolean isVip;
+	public boolean isVip;
 }

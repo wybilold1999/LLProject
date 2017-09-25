@@ -13,5 +13,5 @@ public class IdentifyCard implements java.io.Serializable {
 	public String userName;//名字
 	public String idNo;//身份证号
 	public String idImgUrl; //身份证图片地址
-	public Boolean isIdentify;
+	public boolean isIdentify;
 }
