@@ -9,12 +9,12 @@ import android.view.KeyEvent;
 
 import com.cyanbirds.lljy.config.AppConstants;
 import com.cyanbirds.lljy.config.ValueKey;
+import com.cyanbirds.lljy.entity.AllKeys;
 import com.cyanbirds.lljy.entity.ClientUser;
-import com.cyanbirds.lljy.entity.IDKey;
 import com.cyanbirds.lljy.helper.IMChattingHelper;
 import com.cyanbirds.lljy.manager.AppManager;
 import com.cyanbirds.lljy.net.request.DownloadFileRequest;
-import com.cyanbirds.lljy.net.request.GetIDKeyRequest;
+import com.cyanbirds.lljy.net.request.GetIdKeysRequest;
 import com.cyanbirds.lljy.net.request.UserLoginRequest;
 import com.cyanbirds.lljy.utils.FileAccessorUtils;
 import com.cyanbirds.lljy.utils.Md5Util;
@@ -25,7 +25,6 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
-import java.util.List;
 
 /**
  * @ClassName:LauncherActivity
@@ -80,7 +79,7 @@ public class LauncherActivity extends Activity {
     };
 
     private void init() {
-        new GetWeChatIdTask().request();
+        new GetIdKeysTask().request();
         if (AppManager.isLogin()) {//是否已经登录
             login();
         } else {
@@ -94,27 +93,14 @@ public class LauncherActivity extends Activity {
         }
     }
 
-    class GetWeChatIdTask extends GetIDKeyRequest {
+    class GetIdKeysTask extends GetIdKeysRequest {
         @Override
-        public void onPostExecute(List<IDKey> idKeys) {
-            if (idKeys != null && idKeys.size() > 0) {
-                for (IDKey idKey : idKeys) {
-                    if ("xiaomi".equals(idKey.platform)) {
-                        AppConstants.MI_PUSH_APP_ID = idKey.appId;
-                        AppConstants.MI_PUSH_APP_KEY = idKey.appKey;
-                    } else if ("wechat".equals(idKey.platform)) {
-                        if (!TextUtils.isEmpty(idKey.appId)) {
-                            String[] ids = idKey.appId.split(";");
-                            if (ids != null && ids.length == 2) {
-                                AppConstants.WEIXIN_ID = ids[0];
-                                AppConstants.WEIXIN_PAY_ID = ids[1];
-                            }
-                        }
-                    } else if ("qq".equals(idKey.platform)) {
-                        AppConstants.mAppid = idKey.appId;
-                    }
-                }
-            }
+        public void onPostExecute(AllKeys allKeys) {
+            AppConstants.WEIXIN_ID = allKeys.weChatId;
+            AppConstants.WEIXIN_PAY_ID = allKeys.weChatPayId;
+            AppConstants.YUNTONGXUN_ID = allKeys.ytxId;
+            AppConstants.YUNTONGXUN_TOKEN = allKeys.ytxKey;
+            AppConstants.CHAT_LIMIT = allKeys.chatLimit;
             registerWeiXin();
         }
 

@@ -46,26 +46,19 @@ import org.json.JSONObject;
 
 import java.io.File;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
  * Created by Administrator on 2016/4/23.
  */
-public class LoginActivity extends BaseActivity {
-    @BindView(R.id.login_account)
+public class LoginActivity extends BaseActivity implements View.OnClickListener {
+
     EditText loginAccount;
-    @BindView(R.id.login_pwd)
     EditText loginPwd;
-    @BindView(R.id.btn_login)
     FancyButton btnLogin;
-    @BindView(R.id.forget_pwd)
     TextView forgetPwd;
-    @BindView(R.id.weixin_login)
     ImageView weiXinLogin;
-    @BindView(R.id.qq_login)
     ImageView qqLogin;
 
     public static Tencent mTencent;
@@ -90,9 +83,27 @@ public class LoginActivity extends BaseActivity {
         if (toolbar != null) {
             toolbar.setNavigationIcon(R.mipmap.ic_up);
         }
-        setupData();
-
         channelId = CheckUtil.getAppMetaData(this, "UMENG_CHANNEL");
+        setupView();
+        setupEvent();
+        setupData();
+    }
+
+    private void setupView() {
+        loginAccount = (EditText) findViewById(R.id.login_account);
+        loginPwd = (EditText) findViewById(R.id.login_pwd);
+        btnLogin = (FancyButton) findViewById(R.id.btn_login);
+        forgetPwd = (TextView) findViewById(R.id.forget_pwd);
+        weiXinLogin = (ImageView) findViewById(R.id.weixin_login);
+        qqLogin = (ImageView) findViewById(R.id.qq_login);
+
+    }
+
+    private void setupEvent() {
+        btnLogin.setOnClickListener(this);
+        forgetPwd.setOnClickListener(this);
+        qqLogin.setOnClickListener(this);
+        weiXinLogin.setOnClickListener(this);
     }
 
     private void setupData(){
@@ -109,7 +120,7 @@ public class LoginActivity extends BaseActivity {
         curLon = getIntent().getStringExtra(ValueKey.LONGITUDE);
     }
 
-    @OnClick({R.id.btn_login, R.id.forget_pwd, R.id.qq_login, R.id.weixin_login})
+    @Override
     public void onClick(View view) {
         Intent intent = new Intent();
         switch (view.getId()) {
@@ -164,14 +175,18 @@ public class LoginActivity extends BaseActivity {
     class WXLoginTask extends WXLoginRequest {
         @Override
         public void onPostExecute(ClientUser clientUser) {
+            ProgressDialogUtils.getInstance(LoginActivity.this).dismiss();
             MobclickAgent.onProfileSignIn(String.valueOf(AppManager
                     .getClientUser().userId));
-            if(!new File(FileAccessorUtils.FACE_IMAGE,
-                    Md5Util.md5(clientUser.face_url) + ".jpg").exists()
+            File faceLocalFile = new File(FileAccessorUtils.FACE_IMAGE,
+                    Md5Util.md5(clientUser.face_url) + ".jpg");
+            if(!faceLocalFile.exists()
                     && !TextUtils.isEmpty(clientUser.face_url)){
                 new DownloadPortraitTask().request(clientUser.face_url,
                         FileAccessorUtils.FACE_IMAGE,
                         Md5Util.md5(clientUser.face_url) + ".jpg");
+            } else {
+                clientUser.face_local = faceLocalFile.getAbsolutePath();
             }
             clientUser.currentCity = mCurrrentCity;
             clientUser.latitude = curLat;
@@ -198,14 +213,18 @@ public class LoginActivity extends BaseActivity {
         @Override
         public void onPostExecute(ClientUser clientUser) {
             hideSoftKeyboard();
+            ProgressDialogUtils.getInstance(LoginActivity.this).dismiss();
             MobclickAgent.onProfileSignIn(String.valueOf(AppManager
                     .getClientUser().userId));
-            if(!new File(FileAccessorUtils.FACE_IMAGE,
-                    Md5Util.md5(clientUser.face_url) + ".jpg").exists()
+            File faceLocalFile = new File(FileAccessorUtils.FACE_IMAGE,
+                    Md5Util.md5(clientUser.face_url) + ".jpg");
+            if(!faceLocalFile.exists()
                     && !TextUtils.isEmpty(clientUser.face_url)){
                 new DownloadPortraitTask().request(clientUser.face_url,
                         FileAccessorUtils.FACE_IMAGE,
                         Md5Util.md5(clientUser.face_url) + ".jpg");
+            } else {
+                clientUser.face_local = faceLocalFile.getAbsolutePath();
             }
             clientUser.currentCity = mCurrrentCity;
             clientUser.latitude = curLat;
@@ -310,14 +329,18 @@ public class LoginActivity extends BaseActivity {
     class QqLoginTask extends QqLoginRequest {
         @Override
         public void onPostExecute(ClientUser clientUser) {
+            ProgressDialogUtils.getInstance(LoginActivity.this).dismiss();
             MobclickAgent.onProfileSignIn(String.valueOf(AppManager
                     .getClientUser().userId));
-            if(!new File(FileAccessorUtils.FACE_IMAGE,
-                    Md5Util.md5(clientUser.face_url) + ".jpg").exists()
+            File faceLocalFile = new File(FileAccessorUtils.FACE_IMAGE,
+                    Md5Util.md5(clientUser.face_url) + ".jpg");
+            if(!faceLocalFile.exists()
                     && !TextUtils.isEmpty(clientUser.face_url)){
                 new DownloadPortraitTask().request(clientUser.face_url,
                         FileAccessorUtils.FACE_IMAGE,
                         Md5Util.md5(clientUser.face_url) + ".jpg");
+            } else {
+                clientUser.face_local = faceLocalFile.getAbsolutePath();
             }
             clientUser.currentCity = mCurrrentCity;
             clientUser.latitude = curLat;
@@ -334,6 +357,7 @@ public class LoginActivity extends BaseActivity {
 
         @Override
         public void onErrorExecute(String error) {
+            ProgressDialogUtils.getInstance(LoginActivity.this).dismiss();
         }
     }
 
@@ -381,7 +405,6 @@ public class LoginActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         activityIsRunning = true;
-        ProgressDialogUtils.getInstance(this).dismiss();
         MobclickAgent.onPageStart(this.getClass().getName());
         MobclickAgent.onResume(this);
     }
@@ -390,14 +413,9 @@ public class LoginActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         activityIsRunning = false;
+        ProgressDialogUtils.getInstance(this).dismiss();
         MobclickAgent.onPageEnd(this.getClass().getName());
         MobclickAgent.onPause(this);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        ProgressDialogUtils.getInstance(this).dismiss();
     }
 
     @Override

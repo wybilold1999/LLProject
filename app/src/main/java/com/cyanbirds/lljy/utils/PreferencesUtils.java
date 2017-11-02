@@ -103,7 +103,9 @@ public class PreferencesUtils {
 	/** 登录时间*/
 	public static final String SETTINGS_LOGIN_TIME = "com.cyanbird.lljy_login_time";
 	/** 我的零钱*/
-	public static final String SETTINGS_MY_MONEY = "com.cyanbirds.tljy_my_money";
+	public static final String SETTINGS_MY_MONEY = "com.cyanbirds.lljy_my_money";
+	/** 聊天次数限制*/
+	public static final String SETTINGS_CHAT_LIMIT = "com.cyanbird.lljy_chat_limit";
 
 	/**
 	 * 获取RL账号
@@ -1126,6 +1128,26 @@ public class PreferencesUtils {
 		SharedPreferences sp = PreferenceManager
 				.getDefaultSharedPreferences(context);
 		sp.edit().putFloat(SETTINGS_MY_MONEY, count).commit();
+	}
+
+	/**
+	 *
+	 * @param context
+	 * @return
+	 */
+	public static int getChatLimit(final Context context) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		return sp.getInt(SETTINGS_CHAT_LIMIT, 0);
+	}
+
+	/**
+	 * @param context
+	 */
+	public static void setChatLimit(final Context context, final int count) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		sp.edit().putInt(SETTINGS_CHAT_LIMIT, count).commit();
 	}
 
 }

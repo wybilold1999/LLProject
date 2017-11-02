@@ -4,8 +4,6 @@ import android.support.v4.util.ArrayMap;
 
 import com.cyanbirds.lljy.config.AppConstants;
 
-import java.util.Map;
-
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -238,8 +236,8 @@ public interface UserService {
      * 获取微信登录和支付id
      * @return
      */
-    @GET("user/getIdKeys")
-    Call<ResponseBody> getIdKeys();
+    @GET("user/getIdKey")
+    Call<ResponseBody> getIdKey();
 
     @FormUrlEncoded
     @POST("memberOrders/outputMoney")

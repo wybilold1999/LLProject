@@ -10,9 +10,9 @@ package com.cyanbirds.lljy.config;
  */
 public class AppConstants {
 	
-	public static final String BASE_URL = "http://120.76.54.8/LoveLoveServer/";
+//	public static final String BASE_URL = "http://120.76.54.8/LoveLoveServer/";
 //	public static final String BASE_URL = "http://192.168.1.100/LoveLoveServer/";
-//	public static final String BASE_URL = "http://10.0.108.198:8080/LoveLoveServer/";
+	public static final String BASE_URL = "http://10.0.108.198:8080/LoveLoveServer/";
 
 	/**
 	 * 密码加密密匙
@@ -27,8 +27,8 @@ public class AppConstants {
 	/**
 	 *容联云IM
 	 */
-	public static final String YUNTONGXUN_ID = "8aaf07085a3c0ea1015a50eb26f708e6";
-	public static final String YUNTONGXUN_TOKEN = "faa715a460bee3f3fde1437587cc9c9e";
+	public static String YUNTONGXUN_ID = "8aaf07085a3c0ea1015a50eb26f708e6";
+	public static String YUNTONGXUN_TOKEN = "faa715a460bee3f3fde1437587cc9c9e";
 
 	/**
 	 * QQ登录的appid和appkey
@@ -68,5 +68,7 @@ public class AppConstants {
 	public static final String WX_PAY_PLATFORM = "wxpay";
 
 	public static final String ALI_PAY_PLATFORM = "alipay";
+
+	public static int CHAT_LIMIT = 5;
 
 }
