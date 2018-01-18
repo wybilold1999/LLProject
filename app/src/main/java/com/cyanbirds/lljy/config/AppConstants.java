@@ -12,7 +12,7 @@ public class AppConstants {
 	
 	public static final String BASE_URL = "http://120.76.54.8/LoveLoveServer/";
 //	public static final String BASE_URL = "http://192.168.1.100/LoveLoveServer/";
-//	public static final String BASE_URL = "http://10.0.108.198:8080/LoveLoveServer/";
+//	public static final String BASE_URL = "http://10.0.109.239:8080/LoveLoveServer/";
 
 	/**
 	 * 密码加密密匙
