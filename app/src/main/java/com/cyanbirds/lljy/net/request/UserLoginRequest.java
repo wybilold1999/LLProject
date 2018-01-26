@@ -44,6 +44,9 @@ public class UserLoginRequest extends ResultPostExecute<ClientUser> {
 		} else {
 			params.put("currentCity", "");
 		}
+		params.put("province", PreferencesUtils.getCurrentProvince(CSApplication.getInstance()));
+		params.put("latitude", PreferencesUtils.getLatitude(CSApplication.getInstance()));
+		params.put("longitude", PreferencesUtils.getLongitude(CSApplication.getInstance()));
 		params.put("loginTime", String.valueOf(PreferencesUtils.getLoginTime(CSApplication.getInstance())));
 		Call<ResponseBody> call = AppManager.getUserService().userLogin(AppManager.getClientUser().sessionId, params);
 		call.enqueue(new Callback<ResponseBody>() {

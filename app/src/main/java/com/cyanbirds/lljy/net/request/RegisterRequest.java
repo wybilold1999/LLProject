@@ -9,6 +9,7 @@ import com.cyanbirds.lljy.entity.ClientUser;
 import com.cyanbirds.lljy.manager.AppManager;
 import com.cyanbirds.lljy.net.base.ResultPostExecute;
 import com.cyanbirds.lljy.utils.AESOperator;
+import com.cyanbirds.lljy.utils.PreferencesUtils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -43,6 +44,9 @@ public class RegisterRequest extends ResultPostExecute<ClientUser> {
         } else {
             params.put("currentCity", "");
         }
+        params.put("province", PreferencesUtils.getCurrentProvince(CSApplication.getInstance()));
+        params.put("latitude", PreferencesUtils.getLatitude(CSApplication.getInstance()));
+        params.put("longitude", PreferencesUtils.getLongitude(CSApplication.getInstance()));
         Call<ResponseBody> call = AppManager.getUserService().userRegister(params);
         call.enqueue(new Callback<ResponseBody>() {
             @Override

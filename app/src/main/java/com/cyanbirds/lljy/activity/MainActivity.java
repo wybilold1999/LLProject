@@ -15,8 +15,10 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -37,6 +39,7 @@ import com.cyanbirds.lljy.activity.base.BaseActivity;
 import com.cyanbirds.lljy.config.AppConstants;
 import com.cyanbirds.lljy.config.ValueKey;
 import com.cyanbirds.lljy.db.ConversationSqlManager;
+import com.cyanbirds.lljy.entity.AppointmentModel;
 import com.cyanbirds.lljy.entity.CityInfo;
 import com.cyanbirds.lljy.entity.FederationToken;
 import com.cyanbirds.lljy.entity.FollowModel;
@@ -53,6 +56,7 @@ import com.cyanbirds.lljy.listener.MessageUnReadListener;
 import com.cyanbirds.lljy.manager.AppManager;
 import com.cyanbirds.lljy.manager.NotificationManager;
 import com.cyanbirds.lljy.net.request.FollowListRequest;
+import com.cyanbirds.lljy.net.request.GetAppointmentListRequest;
 import com.cyanbirds.lljy.net.request.GetCityInfoRequest;
 import com.cyanbirds.lljy.net.request.GetLoveFormeListRequest;
 import com.cyanbirds.lljy.net.request.GetOSSTokenRequest;
@@ -64,6 +68,7 @@ import com.cyanbirds.lljy.utils.MsgUtil;
 import com.cyanbirds.lljy.utils.PreferencesUtils;
 import com.cyanbirds.lljy.utils.PushMsgUtil;
 import com.cyanbirds.lljy.utils.ToastUtil;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.igexin.sdk.PushManager;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
@@ -79,6 +84,10 @@ import java.util.Set;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
 
+import static com.cyanbirds.lljy.entity.AppointmentModel.AppointStatus.ACCEPT;
+import static com.cyanbirds.lljy.entity.AppointmentModel.AppointStatus.DECLINE;
+import static com.cyanbirds.lljy.entity.AppointmentModel.AppointStatus.MY_WAIT_CALL_BACK;
+
 public class MainActivity extends BaseActivity implements MessageUnReadListener.OnMessageUnReadListener, AMapLocationListener {
 
 	private FragmentTabHost mTabHost;
@@ -92,8 +101,6 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 
 	private static final int MSG_SET_ALIAS = 1001;//极光推送设置别名
 	private static final int MSG_SET_TAGS = 1002;//极光推送设置tag
-
-	private long clickTime = 0; //记录第一次点击的时间
 
 	private AMapLocationClientOption mLocationOption;
 	private AMapLocationClient mlocationClient;
@@ -185,15 +192,23 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 				public void run() {
 					new MyGiftListTask().request(1, 1);
 				}
-			}, 1500 * 10);
+			}, 5000 * 10);
 
 			mHandler.postDelayed(new Runnable() {
 				@Override
 				public void run() {
 					new FollowListTask().request("followFormeList", 1, 1);
 				}
-			}, 5000 * 10);
+			}, 1500 * 10);
 		}
+
+		if (AppManager.getClientUser().isShowVip && AppManager.getClientUser().isShowAppointment) {
+			//我约的
+			new GetIAppointmentListTask().request(1, 1, AppManager.getClientUser().userId, 0);
+			//约我的
+			new GetAppointmeListTask().request(1, 1, AppManager.getClientUser().userId, 1);
+		}
+
 		registerWeiXin();
 	}
 
@@ -469,6 +484,108 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 		@Override
 		public void onErrorExecute(String error) {
 		}
+	}
+
+	/**
+	 * 我约的
+	 */
+	class GetIAppointmentListTask extends GetAppointmentListRequest {
+
+		@Override
+		public void onPostExecute(List<AppointmentModel> appointmentModels) {
+			if(appointmentModels != null && appointmentModels.size() > 0){
+				final AppointmentModel model = appointmentModels.get(0);
+				if(model.status == ACCEPT || model.status == DECLINE) {
+					String lastUserId = PreferencesUtils.getIAppointUserId(MainActivity.this);
+					if (!lastUserId.equals(String.valueOf(model.userById))) {
+						PreferencesUtils.setIAppointUserId(
+								MainActivity.this, String.valueOf(model.userById));
+						String status = "";
+						if (model.status == ACCEPT) {
+							status = model.userByName + "同意了你的约会请求";
+						} else {
+							status = model.userByName + "拒绝了你的约会请求";
+						}
+						MsgUtil.sendAttentionOrGiftMsg(String.valueOf(model.userById),
+								model.userName, model.faceUrl, status);
+					}
+				}
+			}
+		}
+
+		@Override
+		public void onErrorExecute(String error) {
+		}
+	}
+
+	/**
+	 * 约我的
+	 */
+	class GetAppointmeListTask extends GetAppointmentListRequest {
+
+		@Override
+		public void onPostExecute(List<AppointmentModel> appointmentModels) {
+			if(appointmentModels != null && appointmentModels.size() > 0){
+				AppointmentModel model = appointmentModels.get(0);
+				if(model.status == MY_WAIT_CALL_BACK) {
+					String lastUserId = PreferencesUtils.getAppointMeUserId(MainActivity.this);
+					if (!lastUserId.equals(String.valueOf(model.userById))) {
+						PreferencesUtils.setAppointMeUserId(
+								MainActivity.this, String.valueOf(model.userById));
+						//向你发起了约会申请
+						showAppointmentInfoDialog(model);
+					}
+				}
+			}
+		}
+
+		@Override
+		public void onErrorExecute(String error) {
+		}
+	}
+
+	private void showAppointmentInfoDialog(final AppointmentModel model) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.appointment_invite);
+		builder.setView(initAppointmentUserInfoView(model));
+		builder.setPositiveButton(R.string.check_appointment_invite_info, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+				Intent intent = new Intent(MainActivity.this, AppointmentInfoActivity.class);
+				intent.putExtra(ValueKey.DATA, model);
+				intent.putExtra(ValueKey.FROM_ACTIVITY, MainActivity.this.getClass().getSimpleName());
+				startActivity(intent);
+			}
+		});
+		builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		builder.setCancelable(false);
+		builder.show();
+	}
+
+	private View initAppointmentUserInfoView(final AppointmentModel model) {
+		View view = LayoutInflater.from(this).inflate(R.layout.dialog_appointment, null);
+		SimpleDraweeView portrait = (SimpleDraweeView) view.findViewById(R.id.portrait);
+		TextView inviteInfo = (TextView) view.findViewById(R.id.appointment_info);
+		if (!TextUtils.isEmpty(model.faceUrl)) {
+			portrait.setImageURI(Uri.parse(model.faceUrl));
+		}
+		portrait.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Intent intent = new Intent(MainActivity.this, PersonalInfoActivity.class);
+				intent.putExtra(ValueKey.USER_ID, model.userId);
+				startActivity(intent);
+			}
+		});
+		inviteInfo.setText(Html.fromHtml(String.format(
+				getResources().getString(R.string.appointment_invite_info), model.userName)));
+		return view;
 	}
 
 	/**

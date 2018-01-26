@@ -23,6 +23,7 @@ import com.cyanbirds.lljy.activity.IdentifyActivity;
 import com.cyanbirds.lljy.activity.LoveFormeActivity;
 import com.cyanbirds.lljy.activity.MakeMoneyActivity;
 import com.cyanbirds.lljy.activity.MoneyPacketActivity;
+import com.cyanbirds.lljy.activity.MyAppointmentActivity;
 import com.cyanbirds.lljy.activity.MyAttentionActivity;
 import com.cyanbirds.lljy.activity.MyGiftsActivity;
 import com.cyanbirds.lljy.activity.MyGoldActivity;
@@ -31,6 +32,7 @@ import com.cyanbirds.lljy.activity.NearPartyActivity;
 import com.cyanbirds.lljy.activity.PersonalInfoActivity;
 import com.cyanbirds.lljy.activity.SettingActivity;
 import com.cyanbirds.lljy.activity.SuccessCaseActivity;
+import com.cyanbirds.lljy.activity.VideoListActivity;
 import com.cyanbirds.lljy.activity.VipCenterActivity;
 import com.cyanbirds.lljy.config.ValueKey;
 import com.cyanbirds.lljy.entity.ClientUser;
@@ -129,6 +131,12 @@ public class PersonalFragment extends Fragment {
 	CardView mMoneyCard;
 	@BindView(R.id.money_lay)
 	RelativeLayout mMoneyLay;
+	@BindView(R.id.video_show_card)
+	CardView mVideoShowCard;
+	@BindView(R.id.video_show_lay)
+	RelativeLayout mVideoShowLay;
+	@BindView(R.id.my_appointment_lay)
+	RelativeLayout mAppointmentLay;
 
 	private View rootView;
 
@@ -245,6 +253,16 @@ public class PersonalFragment extends Fragment {
 			} else {
 				mMoneyCard.setVisibility(View.GONE);
 			}
+			if (clientUser.isShowVideo) {
+				mVideoShowCard.setVisibility(View.VISIBLE);
+			} else {
+				mVideoShowCard.setVisibility(View.GONE);
+			}
+			if (clientUser.isShowAppointment) {
+				mAppointmentLay.setVisibility(View.VISIBLE);
+			} else {
+				mAppointmentLay.setVisibility(View.GONE);
+			}
 		}
 	}
 
@@ -267,7 +285,8 @@ public class PersonalFragment extends Fragment {
 			R.id.head_portrait_lay, R.id.vip_lay, R.id.my_attention,
 			R.id.attentioned_user, R.id.good_user, R.id.setting, R.id.about, R.id.my_gold,
 			R.id.download_layout, R.id.lovers_lay, R.id.success_case,
-			R.id.near_party, R.id.identify_lay, R.id.my_visitor, R.id.my_gifts, R.id.money_lay})
+			R.id.near_party, R.id.identify_lay, R.id.my_visitor, R.id.my_gifts,
+			R.id.money_lay, R.id.video_show_lay, R.id.my_appointment_lay})
 	public void onClick(View view) {
 		Intent intent = new Intent();
 		switch (view.getId()) {
@@ -336,6 +355,14 @@ public class PersonalFragment extends Fragment {
 				intent.setClass(getActivity(), MoneyPacketActivity.class);
 				startActivity(intent);
 				break;
+			case R.id.video_show_lay:
+				intent.setClass(getActivity(), VideoListActivity.class);
+				startActivity(intent);
+				break;
+			case R.id.my_appointment_lay:
+				intent.setClass(getActivity(), MyAppointmentActivity.class);
+				startActivity(intent);
+				break;
 		}
 	}
 
@@ -376,6 +403,16 @@ public class PersonalFragment extends Fragment {
 				mLoversCard.setVisibility(View.VISIBLE);
 			} else {
 				mLoversCard.setVisibility(View.GONE);
+			}
+			if (clientUser.isShowVideo) {
+				mVideoShowCard.setVisibility(View.VISIBLE);
+			} else {
+				mVideoShowCard.setVisibility(View.GONE);
+			}
+			if (clientUser.isShowAppointment) {
+				mAppointmentLay.setVisibility(View.VISIBLE);
+			} else {
+				mAppointmentLay.setVisibility(View.GONE);
 			}
 		}
 	}

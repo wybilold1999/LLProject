@@ -95,4 +95,6 @@ public class ValueKey {
 	public static final String DATA = "data";
 	/** LOCATION  **/
 	public static final String LOCATION = "location";
+	/**视频类型**/
+	public static final String VIDEO_TYPE = "video_type";
 }

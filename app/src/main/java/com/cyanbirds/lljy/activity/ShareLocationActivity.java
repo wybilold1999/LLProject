@@ -5,10 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -62,7 +60,7 @@ import java.util.List;
  *
  */
 public class ShareLocationActivity extends BaseActivity implements
-		AMapLocationListener, GeocodeSearch.OnGeocodeSearchListener,
+        AMapLocationListener, GeocodeSearch.OnGeocodeSearchListener,
 		AMap.OnMapTouchListener, OnClickListener, AMap.OnMapScreenShotListener {
 
 	private MapView mapView;
@@ -83,9 +81,7 @@ public class ShareLocationActivity extends BaseActivity implements
 	private int mSelId = 0;
 	private String mAddress;// 选中的地址
 
-	private DialogInterface mDialog;
-
-	private Handler handler = new Handler();
+	private String from;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +92,7 @@ public class ShareLocationActivity extends BaseActivity implements
 		setupViews();
 		setupData();
 		mapView.onCreate(savedInstanceState);// 此方法必须重写
-		init();
+		initMap();
 		setupEvent();
 	}
 
@@ -106,13 +102,11 @@ public class ShareLocationActivity extends BaseActivity implements
 	}
 
 	private void setupData() {
+		from = getIntent().getStringExtra(ValueKey.FROM_ACTIVITY);
 		mPoiLists = new ArrayList<PoiItem>();
 		mAdapter = new PlaceListAdapter(mPoiLists, mSelId, mRecyclerView) {
 			@Override
 			public void onClick(int position) {
-				if (position < 0) {
-					return;
-				}
 				mAdapter.notifyItemChanged(mSelId, position);
 				mSelId = position;
 				PoiItem poiItem = mPoiLists.get(position);
@@ -142,7 +136,7 @@ public class ShareLocationActivity extends BaseActivity implements
 	/**
 	 * 初始化AMap对象
 	 */
-	private void init() {
+	private void initMap() {
 		aMap = mapView.getMap();
 		mUiSettings = aMap.getUiSettings();//实例化UiSettings类对象
 		mUiSettings.setZoomControlsEnabled(false);
@@ -199,6 +193,7 @@ public class ShareLocationActivity extends BaseActivity implements
 		mapView.onSaveInstanceState(outState);
 	}
 
+
 	/**
 	 * 方法必须重写
 	 */
@@ -207,6 +202,7 @@ public class ShareLocationActivity extends BaseActivity implements
 		super.onDestroy();
 		mapView.onDestroy();
 	}
+
 
 	@Override
 	public void onLocationChanged(AMapLocation location) {
@@ -240,7 +236,11 @@ public class ShareLocationActivity extends BaseActivity implements
 						.getString(R.string.location_symbol), result
 						.getRegeocodeAddress().getFormatAddress());
 				mPoiLists.add(poiItem);
-				mAddress = poiItem.getTitle()  + poiItem.getSnippet();
+				if (!TextUtils.isEmpty(from)) {
+					mAddress = poiItem.getSnippet();
+				} else {
+					mAddress = poiItem.getTitle()  + poiItem.getSnippet();
+				}
 				for (PoiItem item : poiList) {
 					if (!TextUtils.isEmpty(item.getSnippet())) {
 						mPoiLists.add(item);
@@ -280,16 +280,22 @@ public class ShareLocationActivity extends BaseActivity implements
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.current_location:
-			LatLng latLng = new LatLng(mLatLonPoint.getLatitude(),
-					mLatLonPoint.getLongitude());
-			aMap.animateCamera(CameraUpdateFactory.changeLatLng(latLng));
+			if (null != mLatLonPoint) {
+				LatLng latLng = new LatLng(mLatLonPoint.getLatitude(),
+						mLatLonPoint.getLongitude());
+				aMap.animateCamera(CameraUpdateFactory.changeLatLng(latLng));
+			}
 			break;
 		}
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.send_menu, menu);
+		if (AppManager.getClientUser().isShowVip && !TextUtils.isEmpty(from)) {
+			getMenuInflater().inflate(R.menu.define_menu, menu);
+		} else {
+			getMenuInflater().inflate(R.menu.send_menu, menu);
+		}
 		return true;
 	}
 
@@ -297,24 +303,38 @@ public class ShareLocationActivity extends BaseActivity implements
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
 		if (id == R.id.send) {
-			if (!AppManager.getClientUser().isShowVip || AppManager.getClientUser().is_vip) {
-				if (AppManager.getClientUser().isShowGold && AppManager.getClientUser().gold_num  < 101) {
-					showGoldDialog();
-				} else {
-					if (mSelLoactionLatLng == null || mSelLoactionLatLng.latitude == 0
-							|| mSelLoactionLatLng.longitude == 0
-							|| TextUtils.isEmpty(mAddress)) {
-						ToastUtil.showMessage(R.string.select_send_location_tips);
-						return true;
+			if (AppManager.getClientUser().isShowVip) {
+				if (AppManager.getClientUser().is_vip) {
+					if (AppManager.getClientUser().isShowGold && AppManager.getClientUser().gold_num  < 101) {
+						showGoldDialog();
+					} else {
+						sendLocation();
 					}
-					getMapScreenShot();
-					return true;
+				} else {
+					showTurnOnVipDialog();
 				}
 			} else {
-				showTurnOnVipDialog();
+				sendLocation();
 			}
+		} else if (id == R.id.ok) {
+			sendLocation();
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	private boolean sendLocation() {
+		if (mSelLoactionLatLng == null || mSelLoactionLatLng.latitude == 0
+				|| mSelLoactionLatLng.longitude == 0
+				|| TextUtils.isEmpty(mAddress)) {
+			if (!TextUtils.isEmpty(from)) {
+				ToastUtil.showMessage(R.string.select_appointment_location_tips);
+			} else {
+				ToastUtil.showMessage(R.string.select_send_location_tips);
+			}
+			return true;
+		}
+		getMapScreenShot();
+		return true;
 	}
 
 	private void showTurnOnVipDialog(){

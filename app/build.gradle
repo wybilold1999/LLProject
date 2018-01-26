@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
+apply plugin: "com.mob.sdk"
 
 android {
     compileSdkVersion 25
@@ -7,10 +8,10 @@ android {
 
     defaultConfig {
         applicationId "com.cyanbirds.lljy"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 22
-        versionCode 13
-        versionName "1.3.3"
+        versionCode 14
+        versionName "1.3.4"
         multiDexEnabled true
     }
     buildTypes {
@@ -24,6 +25,16 @@ android {
         schemaVersion 4
         daoPackage "com.cyanbirds.lljy.greendao"
         targetGenDir "src/main/java"
+    }
+
+    // 在MobSDK的扩展中注册SMSSDK的相关信息
+    MobSDK {
+        appKey "1b9893e7826e8"
+        appSecret "b8983cfb9427a43a596da003967a4077"
+
+        SMSSDK {
+            gui false
+        }
     }
 
     sourceSets {
@@ -110,7 +121,6 @@ def packageTime() {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile name: 'SMSSDK-2.1.3', ext: 'aar'
     testCompile 'junit:junit:4.12'
     compile ('com.android.support:support-v4:25.0.0'){
         force = true;
