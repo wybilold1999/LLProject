@@ -2,27 +2,34 @@ package com.cyanbirds.lljy.activity;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
 import android.lib.widget.verticalmarqueetextview.VerticalMarqueeTextView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alipay.sdk.app.PayTask;
-import com.cyanbirds.lljy.CSApplication;
 import com.cyanbirds.lljy.R;
 import com.cyanbirds.lljy.activity.base.BaseActivity;
 import com.cyanbirds.lljy.adapter.MemberBuyAdapter;
 import com.cyanbirds.lljy.config.AppConstants;
+import com.cyanbirds.lljy.config.ValueKey;
 import com.cyanbirds.lljy.db.NameListDaoManager;
 import com.cyanbirds.lljy.entity.MemberBuy;
 import com.cyanbirds.lljy.entity.NameList;
@@ -36,9 +43,11 @@ import com.cyanbirds.lljy.net.request.GetAliPayOrderInfoRequest;
 import com.cyanbirds.lljy.net.request.GetMemberBuyListRequest;
 import com.cyanbirds.lljy.net.request.GetPayResultRequest;
 import com.cyanbirds.lljy.net.request.GetUserNameRequest;
+import com.cyanbirds.lljy.ui.widget.CustomURLSpan;
 import com.cyanbirds.lljy.ui.widget.DividerItemDecoration;
 import com.cyanbirds.lljy.ui.widget.WrapperLinearLayoutManager;
 import com.cyanbirds.lljy.utils.DensityUtil;
+import com.cyanbirds.lljy.utils.PreferencesUtils;
 import com.cyanbirds.lljy.utils.ToastUtil;
 import com.sunfusheng.marqueeview.MarqueeView;
 import com.tencent.mm.sdk.modelpay.PayReq;
@@ -54,6 +63,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * @author Cloudsoar(wangyb)
@@ -63,19 +73,27 @@ import butterknife.ButterKnife;
 public class VipCenterActivity extends BaseActivity {
 
 	@BindView(R.id.toolbar)
-	Toolbar mToolbar;
+    Toolbar mToolbar;
 	@BindView(R.id.marqueeView)
-	MarqueeView mMarqueeView;
+    MarqueeView mMarqueeView;
 	@BindView(R.id.recyclerview)
-	RecyclerView mRecyclerView;
+    RecyclerView mRecyclerView;
 	@BindView(R.id.vertical_text)
-	VerticalMarqueeTextView mVerticalText;
+    VerticalMarqueeTextView mVerticalText;
 	@BindView(R.id.preferential)
 	TextView mPreferential;//优惠的说明文字，可以控制什么时候显示
 	@BindView(R.id.vip_7_lay)
 	RelativeLayout mVip7Lay;
 	@BindView(R.id.vip_8_lay)
 	RelativeLayout mVip8Lay;
+	@BindView(R.id.scrollView)
+    NestedScrollView mScrollView;
+	@BindView(R.id.vip_9_lay)
+	RelativeLayout mVip9Lay;
+	@BindView(R.id.pref_tel_fare_lay)
+	LinearLayout mPrefTelFareLay;
+	@BindView(R.id.name_list)
+	TextView mTvNameList;
 
 	private MemberBuyAdapter mAdapter;
 
@@ -95,7 +113,8 @@ public class VipCenterActivity extends BaseActivity {
 
 	private final long daySpan = 24 * 60 * 60 * 1000;
 	private String mPref;//优惠信息
-	private List<String> mNameList;
+	private ArrayList<String> mNameList;
+	private MemberBuy mMemberBuy;
 
 	@SuppressLint("HandlerLeak")
 	private Handler mHandler = new Handler() {
@@ -171,7 +190,22 @@ public class VipCenterActivity extends BaseActivity {
 			mVip7Lay.setVisibility(View.GONE);
 			mVip8Lay.setVisibility(View.GONE);
 		}
+		if (AppManager.getClientUser().isShowVideo) {
+			mVip9Lay.setVisibility(View.VISIBLE);
+		} else {
+			mVip9Lay.setVisibility(View.GONE);
+		}
 		new GetMemberBuyListTask().request(NORMAL_VIP);
+	}
+
+	@OnClick({R.id.vip_9_lay})
+	public void onClick(View view) {
+		switch (view.getId()) {
+			case R.id.vip_9_lay:
+				Intent intent = new Intent(this, VideoListActivity.class);
+				startActivity(intent);
+				break;
+		}
 	}
 
 	/**
@@ -179,9 +213,9 @@ public class VipCenterActivity extends BaseActivity {
 	 */
 	class GetUserNameTask extends GetUserNameRequest {
 		@Override
-		public void onPostExecute(List<String> strings) {
+		public void onPostExecute(final List<String> strings) {
 			if (strings != null && strings.size() > 0) {
-				mNameList = strings;
+				mNameList = (ArrayList<String>) strings;
 				StringBuilder builder = new StringBuilder();
 				turnOnVipNameList = new ArrayList<>();
 				for (String name : strings) {
@@ -193,7 +227,22 @@ public class VipCenterActivity extends BaseActivity {
 				}
 				mMarqueeView.startWithList(turnOnVipNameList);
 				if (!TextUtils.isEmpty(mPref) && mPref.indexOf("抽奖") != -1) {
-					buildRewardName();
+//					buildRewardName();
+					final int index = mPref.indexOf("次抽奖");
+					SpannableString spannableString = new SpannableString(mPref);
+					CustomURLSpan urlSpan = new CustomURLSpan("") {
+						@Override
+						public void onClick(View widget) {
+							Intent intent = new Intent(VipCenterActivity.this, RewardActivity.class);
+							intent.putStringArrayListExtra(ValueKey.DATA, mNameList);
+							intent.putExtra(ValueKey.USER, mPref);
+							VipCenterActivity.this.startActivity(intent);
+						}
+					};
+					spannableString.setSpan(urlSpan, index - 1, index + 3, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+					mPreferential.setMovementMethod(LinkMovementMethod.getInstance());
+					mPreferential.setHighlightColor(Color.parseColor("#36969696"));
+					mPreferential.setText(spannableString);
 				} else {
 					mPreferential.setText(mPref);
 				}
@@ -284,6 +333,15 @@ public class VipCenterActivity extends BaseActivity {
 						array.add(Integer.parseInt(memberBuys.get(i).preferential));
 					}
 				}
+				if (array.size() == 0) {
+					mPrefTelFareLay.setVisibility(View.VISIBLE);
+					mTvNameList.setVisibility(View.GONE);
+					mVerticalText.setVisibility(View.GONE);
+				} else {
+					mPrefTelFareLay.setVisibility(View.GONE);
+					mTvNameList.setVisibility(View.VISIBLE);
+					mVerticalText.setVisibility(View.VISIBLE);
+				}
 			}
 			new GetUserNameTask().request(1, 100);
 		}
@@ -330,6 +388,7 @@ public class VipCenterActivity extends BaseActivity {
 	};
 
 	private void showPayDialog(final MemberBuy memberBuy) {
+		mMemberBuy = memberBuy;
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(getResources().getString(R.string.pay_type));
 		builder.setNegativeButton(getResources().getString(R.string.cancel),
@@ -373,6 +432,11 @@ public class VipCenterActivity extends BaseActivity {
 			Snackbar.make(findViewById(R.id.vip_layout),
 					"您已经是会员了，赶快去聊天吧", Snackbar.LENGTH_SHORT)
 					.show();
+			if (mMemberBuy != null) {
+				if (mMemberBuy.price > 200) {
+					PreferencesUtils.setRewardCount(VipCenterActivity.this, 3);
+				}
+			}
 		}
 
 		@Override
@@ -380,18 +444,6 @@ public class VipCenterActivity extends BaseActivity {
 			ToastUtil.showMessage(error);
 		}
 	}
-
-	/*class UpdateVipTask extends UpdateVipRequest {
-		@Override
-		public void onPostExecute(String s) {
-			AppManager.getClientUser().is_vip = true;
-		}
-
-		@Override
-		public void onErrorExecute(String error) {
-		}
-	}*/
-
 
 	/*********************************************************************************************************************/
 

@@ -126,10 +126,11 @@ public class EntranceActivity extends BaseActivity implements AMapLocationListen
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
         if (aMapLocation != null && !TextUtils.isEmpty(aMapLocation.getCity())) {
-            AppManager.getClientUser().latitude = String.valueOf(aMapLocation.getLatitude());
-            AppManager.getClientUser().longitude = String.valueOf(aMapLocation.getLongitude());
             mCurrrentCity = aMapLocation.getCity();
+            curLat = String.valueOf(aMapLocation.getLatitude());
+            curLon = String.valueOf(aMapLocation.getLongitude());
             PreferencesUtils.setCurrentCity(this, mCurrrentCity);
+            PreferencesUtils.setCurrentProvince(EntranceActivity.this, aMapLocation.getProvince());
             EventBus.getDefault().post(new LocationEvent(mCurrrentCity));
         } else {
             if (mCityInfo != null) {
@@ -148,6 +149,8 @@ public class EntranceActivity extends BaseActivity implements AMapLocationListen
                 }
             }
         }
+        PreferencesUtils.setLatitude(this, curLat);
+        PreferencesUtils.setLongitude(this, curLon);
     }
 
     @OnClick({R.id.login, R.id.register})

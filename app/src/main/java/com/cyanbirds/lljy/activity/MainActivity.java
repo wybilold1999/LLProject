@@ -41,16 +41,15 @@ import com.cyanbirds.lljy.config.ValueKey;
 import com.cyanbirds.lljy.db.ConversationSqlManager;
 import com.cyanbirds.lljy.entity.AppointmentModel;
 import com.cyanbirds.lljy.entity.CityInfo;
+import com.cyanbirds.lljy.entity.ClientUser;
 import com.cyanbirds.lljy.entity.FederationToken;
 import com.cyanbirds.lljy.entity.FollowModel;
 import com.cyanbirds.lljy.entity.LoveModel;
 import com.cyanbirds.lljy.entity.ReceiveGiftModel;
-import com.cyanbirds.lljy.eventtype.LocationEvent;
 import com.cyanbirds.lljy.fragment.FoundFragment;
 import com.cyanbirds.lljy.fragment.HomeLoveFragment;
 import com.cyanbirds.lljy.fragment.MessageFragment;
 import com.cyanbirds.lljy.fragment.PersonalFragment;
-import com.cyanbirds.lljy.fragment.VideoShowFragment;
 import com.cyanbirds.lljy.helper.SDKCoreHelper;
 import com.cyanbirds.lljy.listener.MessageUnReadListener;
 import com.cyanbirds.lljy.manager.AppManager;
@@ -61,7 +60,6 @@ import com.cyanbirds.lljy.net.request.GetCityInfoRequest;
 import com.cyanbirds.lljy.net.request.GetLoveFormeListRequest;
 import com.cyanbirds.lljy.net.request.GetOSSTokenRequest;
 import com.cyanbirds.lljy.net.request.GiftsListRequest;
-import com.cyanbirds.lljy.net.request.UploadCityInfoRequest;
 import com.cyanbirds.lljy.service.MyIntentService;
 import com.cyanbirds.lljy.service.MyPushService;
 import com.cyanbirds.lljy.utils.MsgUtil;
@@ -74,8 +72,6 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
 import com.xiaomi.mipush.sdk.MiPushClient;
 import com.yuntongxun.ecsdk.ECInitParams;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -357,14 +353,22 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 
 	@Override
 	public void onLocationChanged(AMapLocation aMapLocation) {
-		if (aMapLocation != null  && !TextUtils.isEmpty(aMapLocation.getCity())) {
-			AppManager.getClientUser().latitude = String.valueOf(aMapLocation.getLatitude());
-			AppManager.getClientUser().longitude = String.valueOf(aMapLocation.getLongitude());
-			new UploadCityInfoTask().request(aMapLocation.getCity(),
-					AppManager.getClientUser().latitude, AppManager.getClientUser().longitude);
-		} else {
-			new UploadCityInfoTask().request(currentCity, curLat, curLon);
+		if (aMapLocation != null && !TextUtils.isEmpty(aMapLocation.getCity())) {
+			PreferencesUtils.setCurrentCity(this, aMapLocation.getCity());
+			ClientUser clientUser = AppManager.getClientUser();
+			clientUser.latitude = String.valueOf(aMapLocation.getLatitude());
+			clientUser.longitude = String.valueOf(aMapLocation.getLongitude());
+			AppManager.setClientUser(clientUser);
+			curLat = clientUser.latitude;
+			curLon = clientUser.longitude;
+
+			if (TextUtils.isEmpty(PreferencesUtils.getCurrentProvince(this))) {
+				PreferencesUtils.setCurrentProvince(this, aMapLocation.getProvince());
+			}
 		}
+
+		PreferencesUtils.setLatitude(this, curLat);
+		PreferencesUtils.setLongitude(this, curLon);
 	}
 
 	/**
@@ -400,7 +404,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 		}
 	}
 
-	class UploadCityInfoTask extends UploadCityInfoRequest {
+	/*class UploadCityInfoTask extends UploadCityInfoRequest {
 
 		@Override
 		public void onPostExecute(String isShow) {
@@ -418,7 +422,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 		@Override
 		public void onErrorExecute(String error) {
 		}
-	}
+	}*/
 
 	/**
 	 * 获取最近喜欢我的那个人

@@ -14,17 +14,17 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.cyanbirds.ttjy.R;
-import com.cyanbirds.ttjy.activity.base.BaseActivity;
-import com.cyanbirds.ttjy.config.AppConstants;
-import com.cyanbirds.ttjy.config.ValueKey;
-import com.cyanbirds.ttjy.entity.AppointmentModel;
-import com.cyanbirds.ttjy.manager.AppManager;
-import com.cyanbirds.ttjy.net.request.ApplyForAppointmentRequest;
-import com.cyanbirds.ttjy.net.request.OSSImagUploadRequest;
-import com.cyanbirds.ttjy.utils.DateUtil;
-import com.cyanbirds.ttjy.utils.ProgressDialogUtils;
-import com.cyanbirds.ttjy.utils.ToastUtil;
+import com.cyanbirds.lljy.R;
+import com.cyanbirds.lljy.activity.base.BaseActivity;
+import com.cyanbirds.lljy.config.AppConstants;
+import com.cyanbirds.lljy.config.ValueKey;
+import com.cyanbirds.lljy.entity.AppointmentModel;
+import com.cyanbirds.lljy.manager.AppManager;
+import com.cyanbirds.lljy.net.request.ApplyForAppointmentRequest;
+import com.cyanbirds.lljy.net.request.OSSImagUploadRequest;
+import com.cyanbirds.lljy.utils.DateUtil;
+import com.cyanbirds.lljy.utils.ProgressDialogUtils;
+import com.cyanbirds.lljy.utils.ToastUtil;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.Calendar;
@@ -34,7 +34,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.cyanbirds.ttjy.utils.DateUtil.DEFAULT_PATTERN;
+import static com.cyanbirds.lljy.utils.DateUtil.DEFAULT_PATTERN;
 
 /**
  * Created by wangyb on 2018/1/9.
