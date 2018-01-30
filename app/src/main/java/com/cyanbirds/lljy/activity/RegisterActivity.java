@@ -125,6 +125,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         switch (view.getId()) {
             case R.id.next:
                 if(checkInput()){
+                    ProgressDialogUtils.getInstance(this).show(R.string.dialog_request_sms_code);
                     new CheckPhoneIsRegisterTask().request(
                             phoneNum.getText().toString().trim());
                 }
@@ -223,6 +224,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 mClientUser.currentCity = mCurrrentCity;
                 intent.putExtra(ValueKey.USER, mClientUser);
                 startActivity(intent);
+                ProgressDialogUtils.getInstance(RegisterActivity.this).dismiss();
             }
         }
 

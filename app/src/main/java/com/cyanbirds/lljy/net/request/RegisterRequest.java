@@ -124,7 +124,7 @@ public class RegisterRequest extends ResultPostExecute<ClientUser> {
             clientUser.do_what_first = data.get("doWhatFirst").getAsString();
             clientUser.conception = data.get("conception").getAsString();
             clientUser.mobile = data.get("phone") == null ? "" : data.get("phone").getAsString();
-            clientUser.versionUpdateInfo = data.get("versionUpdateInfo").getAsString();
+            clientUser.sessionId = data.get("sessionId").getAsString();
             onPostExecute(clientUser);
         } catch (Exception e) {
             onErrorExecute(CSApplication.getInstance().getResources()

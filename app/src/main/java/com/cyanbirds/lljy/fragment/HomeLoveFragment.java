@@ -1,12 +1,10 @@
 package com.cyanbirds.lljy.fragment;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +12,6 @@ import android.view.ViewGroup;
 
 import com.cyanbirds.lljy.R;
 import com.cyanbirds.lljy.adapter.HomeTabFragmentAdapter;
-import com.cyanbirds.lljy.manager.AppManager;
-import com.cyanbirds.lljy.utils.CheckUtil;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
@@ -49,7 +45,6 @@ public class HomeLoveFragment extends Fragment {
 			rootView = inflater.inflate(R.layout.fragment_homelove, null);
 			ButterKnife.bind(this, rootView);
 			setupView();
-			setupData();
 			setHasOptionsMenu(true);
 		}
 		ViewGroup parent = (ViewGroup) rootView.getParent();
@@ -77,39 +72,6 @@ public class HomeLoveFragment extends Fragment {
 		mViewpager.setAdapter(fragmentAdapter);//给ViewPager设置适配器
 		mTabLayout.setupWithViewPager(mViewpager);//将TabLayout和ViewPager关联起来。
 		mTabLayout.setTabsFromPagerAdapter(fragmentAdapter);
-	}
-
-	private void setupData() {
-		if (AppManager.getClientUser().versionCode > AppManager.getVersionCode()) {
-			showVersionInfo();
-		}
-	}
-
-	private void showVersionInfo() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setTitle(R.string.new_version);
-		builder.setMessage(AppManager.getClientUser().versionUpdateInfo);
-		builder.setPositiveButton(getResources().getString(R.string.update),
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.dismiss();
-						/**
-						 * 开始下载apk文件
-						 */
-						/*Intent intent = new Intent(getActivity(), DownloadUpdateService.class);
-						intent.putExtra(ValueKey.APK_URL, AppManager.getClientUser().apkUrl);
-						getActivity().startService(intent);*/
-						AppManager.goToMarket(getActivity(), CheckUtil.getAppMetaData(getActivity(), "UMENG_CHANNEL"));
-					}
-				});
-		builder.setNegativeButton(getResources().getString(R.string.cancel),
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-					}
-				});
-		builder.show();
 	}
 
 	@OnClick(R.id.fab)
