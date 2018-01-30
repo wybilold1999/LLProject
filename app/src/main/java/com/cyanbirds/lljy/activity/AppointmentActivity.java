@@ -50,7 +50,7 @@ public class AppointmentActivity extends BaseActivity {
     RelativeLayout mAppointmentPrjLay;
     @BindView(R.id.appointment_time)
     TextView mAppointmentTime;
-    @BindView(R.id.appointment_info_lay)
+    @BindView(R.id.appointment_time_lay)
     RelativeLayout mAppointmentInfoLay;
     @BindView(R.id.appointment_long)
     TextView mAppointmentLong;
@@ -104,13 +104,13 @@ public class AppointmentActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.appointment_prj_lay, R.id.appointment_time, R.id.appointment_long_lay, R.id.appointment_address_lay, R.id.sure})
+    @OnClick({R.id.appointment_prj_lay, R.id.appointment_time_lay, R.id.appointment_long_lay, R.id.appointment_address_lay, R.id.sure})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.appointment_prj_lay:
                 showPrjDialog();
                 break;
-            case R.id.appointment_time:
+            case R.id.appointment_time_lay:
                 showTimeDialog();
                 break;
             case R.id.appointment_long_lay:

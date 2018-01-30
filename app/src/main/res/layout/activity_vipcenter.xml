@@ -97,6 +97,14 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_height"
+                    android:layout_marginLeft="@dimen/divider_margin_left"
+                    android:layout_marginRight="@dimen/divider_margin_left"
+                    android:background="@color/divider_color"
+                    android:contentDescription="@null"/>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -181,8 +189,8 @@
                     android:layout_marginLeft="20dp"
                     android:contentDescription="@null"
                     app:actualImageScaleType="centerCrop"
-                    app:failureImage="@mipmap/icon_video_show"
-                    app:placeholderImage="@mipmap/icon_video_show"
+                    app:failureImage="@mipmap/ic_video_show"
+                    app:placeholderImage="@mipmap/ic_video_show"
                     app:placeholderImageScaleType="centerCrop"
                     app:roundAsCircle="true"/>
                 <LinearLayout
