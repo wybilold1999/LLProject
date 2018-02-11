@@ -10,6 +10,7 @@ import android.util.Log;
 import com.cyanbirds.lljy.CSApplication;
 import com.cyanbirds.lljy.R;
 import com.cyanbirds.lljy.db.ConversationSqlManager;
+import com.cyanbirds.lljy.db.FConversationSqlManager;
 import com.cyanbirds.lljy.db.IMessageDaoManager;
 import com.cyanbirds.lljy.entity.ClientUser;
 import com.cyanbirds.lljy.entity.Conversation;
@@ -19,7 +20,6 @@ import com.cyanbirds.lljy.listener.MessageCallbackListener;
 import com.cyanbirds.lljy.listener.MessageChangedListener;
 import com.cyanbirds.lljy.listener.MessageStatusReportListener;
 import com.cyanbirds.lljy.manager.AppManager;
-import com.cyanbirds.lljy.utils.CheckUtil;
 import com.cyanbirds.lljy.utils.FileUtils;
 import com.cyanbirds.lljy.utils.ImageUtil;
 import com.cyanbirds.lljy.utils.PreferencesUtils;
@@ -54,7 +54,6 @@ public class IMChattingHelper implements OnChatReceiveListener {
 	/** 是否是同步消息 */
 	private boolean isSyncOffline = false;
 	private List<IMessage> offlineMsg = null;
-	private static final String CITY = "深圳市";
 
 	public static IMChattingHelper getInstance() {
 		return IMChattingHelper.SingletonHolder.INSTANCE;
@@ -72,43 +71,27 @@ public class IMChattingHelper implements OnChatReceiveListener {
 		mChatManager = SDKCoreHelper.getECChatManager();
 	}
 
-	public long sendTextMsg(final ClientUser clientUser, final String msgContent) {
+	/**
+	 * @param conversationId 真实用户的会话id
+	 * @param realId 真实用户的用户id
+	 * @param clientUser 假用户
+	 * @param msgContent
+     */
+	public void sendTextMsg(long conversationId, String realId, final ClientUser clientUser, final String msgContent) {
 		// 组建一个待发送的ECMessage
 		ECMessage ecMessagee = ECMessage.createECMessage(ECMessage.Type.TXT);
 		ecMessagee.setDirection(ECMessage.Direction.SEND);
 		ecMessagee.setMsgId(AppManager.getUUID());
 
-		String channel = CheckUtil.getAppMetaData(mContext, "UMENG_CHANNEL");
-//		String channel = "oppo";
-		ecMessagee.setFrom(AppManager.getClientUser().userId);
-		ecMessagee.setNickName(AppManager.getClientUser().user_name);
-		String toUserId = "";
-		if ("-1".equals(clientUser.userId)) {//给客服发送消息
-			toUserId = "-1";
-		} else {
-			if (!"oppo".equals(channel) || !CITY.contains(AppManager.getClientUser().currentCity)) {
-				toUserId = "-2";//不是oppo渠道或者CITY没有包含当前城市，发送消息给-2，否则发送消息给-3
-			} else {
-				toUserId = "-3";//只接收oppo渠道且当前城市是CITY中某一个城市的用户发送的消息
-			}
-		}
-		ecMessagee.setTo(toUserId);
+		ecMessagee.setFrom(clientUser.userId);
+		ecMessagee.setNickName(clientUser.user_name);
+		ecMessagee.setTo(realId);
 		StringBuilder userData = new StringBuilder();
-		userData.append(AppManager.getClientUser().userId)
-				.append(";")
-				.append(AppManager.getClientUser().user_name)
-				.append(";")
-				.append(AppManager.getClientUser().face_url)
-				.append(";")//真实用户信息
-				.append(clientUser.userId)
+		userData.append(clientUser.userId)
 				.append(";")
 				.append(clientUser.user_name)
 				.append(";")
-				.append(clientUser.face_url)//假用户信息
-				.append(";")
-				.append(channel)
-				.append(";")
-				.append(AppManager.getClientUser().currentCity);
+				.append(clientUser.face_url);
 		ecMessagee.setUserData(userData.toString());
 
 		ecMessagee.setMsgTime(System.currentTimeMillis());
@@ -133,7 +116,8 @@ public class IMChattingHelper implements OnChatReceiveListener {
 		message.create_time = ecMessagee.getMsgTime();
 		message.send_time = message.create_time;
 
-		long convsId = ConversationSqlManager.getInstance(mContext).insertConversation(ecMessagee);
+		long convsId = FConversationSqlManager.getInstance(mContext).insertConversation(
+				conversationId, userData.toString(), ecMessagee);
 		message.conversationId = convsId;
 		MessageCallbackListener.getInstance().notifyPushMessage(message);//刷新UI
 
@@ -164,50 +148,26 @@ public class IMChattingHelper implements OnChatReceiveListener {
 				CSApplication.getInstance(),
 				Uri.parse("android.resource://" + AppManager.getPackageName()
 						+ "/" + R.raw.sound_send)).play();
-		return convsId;
 	}
 
 	/**
 	 * 发送图片消息
 	 */
-	public void sendImgMsg(final ClientUser clientUser, final String imgUrl) {
+	public void sendImgMsg(long conversationId, String realId, final ClientUser clientUser, final String imgUrl) {
 		if (new File(imgUrl).exists()) {
 			ECMessage ecMessagee = ECMessage.createECMessage(ECMessage.Type.IMAGE);
 			ecMessagee.setDirection(ECMessage.Direction.SEND);
 			ecMessagee.setMsgId(AppManager.getUUID());
 
-			String channel = CheckUtil.getAppMetaData(mContext, "UMENG_CHANNEL");
-//			String channel = "oppo";
-			ecMessagee.setFrom(AppManager.getClientUser().userId);
-			ecMessagee.setNickName(AppManager.getClientUser().user_name);
-			String toUserId = "";
-			if ("-1".equals(clientUser.userId)) {//给客服发送消息
-				toUserId = "-1";
-			} else {
-				if (!"oppo".equals(channel) || !CITY.contains(AppManager.getClientUser().currentCity)) {
-					toUserId = "-2";//不是oppo渠道或者CITY没有包含当前城市，发送消息给-2，否则发送消息给-3
-				} else {
-					toUserId = "-3";//只接收oppo渠道且当前城市是CITY中某一个城市的用户发送的消息
-				}
-			}
-			ecMessagee.setTo(toUserId);
-
+			ecMessagee.setFrom(clientUser.userId);
+			ecMessagee.setNickName(clientUser.user_name);
+			ecMessagee.setTo(realId);
 			StringBuilder userData = new StringBuilder();
-			userData.append(AppManager.getClientUser().userId)
-					.append(";")
-					.append(AppManager.getClientUser().user_name)
-					.append(";")
-					.append(AppManager.getClientUser().face_url)
-					.append(";")//真实用户信息
-					.append(clientUser.userId)
+			userData.append(clientUser.userId)
 					.append(";")
 					.append(clientUser.user_name)
 					.append(";")
-					.append(clientUser.face_url)//假用户信息
-					.append(";")
-					.append(channel)
-					.append(";")
-					.append(AppManager.getClientUser().currentCity);
+					.append(clientUser.face_url);
 			ecMessagee.setUserData(userData.toString());
 
 			ecMessagee.setMsgTime(System.currentTimeMillis());
@@ -237,8 +197,8 @@ public class IMChattingHelper implements OnChatReceiveListener {
 			message.imgHigh = options.outHeight;
 			message.content = message.imgWidth + ";" + message.imgHigh;
 
-			long convsId = ConversationSqlManager.getInstance(mContext)
-					.insertConversation(ecMessagee);
+			long convsId = FConversationSqlManager.getInstance(mContext).insertConversation(
+					conversationId, userData.toString(), ecMessagee);
 			message.conversationId = convsId;
 			MessageCallbackListener.getInstance().notifyPushMessage(message);//刷新UI
 
@@ -272,46 +232,23 @@ public class IMChattingHelper implements OnChatReceiveListener {
 	/**
 	 * 发送位置消息
 	 */
-	public void sendLocationMsg(final ClientUser clientUser, final double latitude,
-								final double longitude,
-								final String address, final String imgUrl) {
+	public void sendLocationMsg(long conversationId, String realId, final ClientUser clientUser, final double latitude,
+                                final double longitude,
+                                final String address, final String imgUrl) {
 		if (new File(imgUrl).exists()) {
 			ECMessage ecMessagee = ECMessage.createECMessage(ECMessage.Type.LOCATION);
 			ecMessagee.setDirection(ECMessage.Direction.SEND);
 			ecMessagee.setMsgId(AppManager.getUUID());
 
-			String channel = CheckUtil.getAppMetaData(mContext, "UMENG_CHANNEL");
-//			String channel = "oppo";
-			ecMessagee.setFrom(AppManager.getClientUser().userId);
-			ecMessagee.setNickName(AppManager.getClientUser().user_name);
-			String toUserId = "";
-			if ("-1".equals(clientUser.userId)) {//给客服发送消息
-				toUserId = "-1";
-			} else {
-				if (!"oppo".equals(channel) || !CITY.contains(AppManager.getClientUser().currentCity)) {
-					toUserId = "-2";//不是oppo渠道或者CITY没有包含当前城市，发送消息给-2，否则发送消息给-3
-				} else {
-					toUserId = "-3";//只接收oppo渠道且当前城市是CITY中某一个城市的用户发送的消息
-				}
-			}
-			ecMessagee.setTo(toUserId);
-
+			ecMessagee.setFrom(clientUser.userId);
+			ecMessagee.setNickName(clientUser.user_name);
+			ecMessagee.setTo(realId);
 			StringBuilder userData = new StringBuilder();
-			userData.append(AppManager.getClientUser().userId)
-					.append(";")
-					.append(AppManager.getClientUser().user_name)
-					.append(";")
-					.append(AppManager.getClientUser().face_url)
-					.append(";")//真实用户信息
-					.append(clientUser.userId)
+			userData.append(clientUser.userId)
 					.append(";")
 					.append(clientUser.user_name)
 					.append(";")
-					.append(clientUser.face_url)//假用户信息
-					.append(";")
-					.append(channel)
-					.append(";")
-					.append(AppManager.getClientUser().currentCity);
+					.append(clientUser.face_url);
 			ecMessagee.setUserData(userData.toString());
 
 			ecMessagee.setMsgTime(System.currentTimeMillis());
@@ -344,8 +281,8 @@ public class IMChattingHelper implements OnChatReceiveListener {
 			message.imgWidth = options.outWidth;
 			message.imgHigh = options.outHeight;
 
-			long convsId = ConversationSqlManager.getInstance(mContext)
-					.insertConversation(ecMessagee);
+			long convsId = FConversationSqlManager.getInstance(mContext).insertConversation(
+					conversationId, userData.toString(), ecMessagee);
 			message.conversationId = convsId;
 			MessageCallbackListener.getInstance().notifyPushMessage(message);//刷新UI
 
@@ -373,44 +310,21 @@ public class IMChattingHelper implements OnChatReceiveListener {
 						+ "/" + R.raw.sound_send)).play();
 	}
 
-	public void sendRedPacketMsg(final ClientUser clientUser, final String msgContent) {
+	public void sendRedPacketMsg(long conversationId, String realId, final ClientUser clientUser, final String msgContent) {
 		// 组建一个待发送的ECMessage
 		ECMessage ecMessagee = ECMessage.createECMessage(ECMessage.Type.STATE);
 		ecMessagee.setDirection(ECMessage.Direction.SEND);
 		ecMessagee.setMsgId(AppManager.getUUID());
 
-		String channel = CheckUtil.getAppMetaData(mContext, "UMENG_CHANNEL");
-//		String channel = "oppo";
-		ecMessagee.setFrom(AppManager.getClientUser().userId);
-		ecMessagee.setNickName(AppManager.getClientUser().user_name);
-		String toUserId = "";
-		if ("-1".equals(clientUser.userId)) {//给客服发送消息
-			toUserId = "-1";
-		} else {
-			if (!"oppo".equals(channel) || !CITY.contains(AppManager.getClientUser().currentCity)) {
-				toUserId = "-2";//不是oppo渠道或者CITY没有包含当前城市，发送消息给-2，否则发送消息给-3
-			} else {
-				toUserId = "-3";//只接收oppo渠道且当前城市是CITY中某一个城市的用户发送的消息
-			}
-		}
-		ecMessagee.setTo(toUserId);
-
+		ecMessagee.setFrom(clientUser.userId);
+		ecMessagee.setNickName(clientUser.user_name);
+		ecMessagee.setTo(realId);
 		StringBuilder userData = new StringBuilder();
-		userData.append(AppManager.getClientUser().userId)
-				.append(";")
-				.append(AppManager.getClientUser().user_name)
-				.append(";")
-				.append(AppManager.getClientUser().face_url)
-				.append(";")//真实用户信息
-				.append(clientUser.userId)
+		userData.append(clientUser.userId)
 				.append(";")
 				.append(clientUser.user_name)
 				.append(";")
-				.append(clientUser.face_url)//假用户信息
-				.append(";")
-				.append(channel)
-				.append(";")
-				.append(AppManager.getClientUser().currentCity);
+				.append(clientUser.face_url);
 		ecMessagee.setUserData(userData.toString());
 
 		ecMessagee.setMsgTime(System.currentTimeMillis());
@@ -427,7 +341,8 @@ public class IMChattingHelper implements OnChatReceiveListener {
 		message.talker = ecMessagee.getTo();
 		message.sender = ecMessagee.getForm();
 		message.sender_name = ecMessagee.getNickName();
-		message.content = msgContent;
+		ECTextMessageBody body = (ECTextMessageBody) ecMessagee.getBody();
+		message.content = body.getMessage();
 		message.msgType = IMessage.MessageType.RED_PKT;
 		message.isRead = false;
 		message.isSend = IMessage.MessageIsSend.SEND;
@@ -435,7 +350,8 @@ public class IMChattingHelper implements OnChatReceiveListener {
 		message.create_time = ecMessagee.getMsgTime();
 		message.send_time = message.create_time;
 
-		long convsId = ConversationSqlManager.getInstance(mContext).insertConversation(ecMessagee);
+		long convsId = FConversationSqlManager.getInstance(mContext).insertConversation(
+				conversationId, userData.toString(), ecMessagee);
 		message.conversationId = convsId;
 		MessageCallbackListener.getInstance().notifyPushMessage(message);//刷新UI
 
@@ -534,14 +450,18 @@ public class IMChattingHelper implements OnChatReceiveListener {
 		if (!msg.getTo().equals(AppManager.getClientUser().userId)) {
 			return;
 		}
-		long conversationId = ConversationSqlManager.getInstance(mContext)
-				.insertConversation(msg);
-		IMessage message = new IMessage();
-		message.msgId = AppManager.getUUID();
+		long conversationId = -1;
 		String userData = msg.getUserData();
 		if (!TextUtils.isEmpty(userData)) {
-			String[] data = userData.split(";");
-			if (data.length > 0) {
+			long rId = ConversationSqlManager.getInstance(mContext).insertConversation(userData, msg);
+			conversationId = FConversationSqlManager.getInstance(mContext)
+					.insertConversation(rId, userData, msg);
+		}
+		IMessage message = new IMessage();
+		message.msgId = AppManager.getUUID();
+		if (!TextUtils.isEmpty(userData)) {
+			if (userData.split(";").length > 0) {
+				String[] data = userData.split(";");
 				message.talker = data[0];
 				message.sender = data[0];
 				message.sender_name = data[1];
@@ -676,7 +596,6 @@ public class IMChattingHelper implements OnChatReceiveListener {
 			convs.talker = String.valueOf(-1);
 			convs.talkerName = mContext.getResources().getString(R.string.app_name) + "团队";
 			convs.localPortrait = "res:///" + R.mipmap.ic_launcher;
-			convs.faceUrl = "http://real-love-server.oss-cn-shenzhen.aliyuncs.com/tan_love/img/lljy_logo.png";
 			convs.content = CSApplication.getInstance().getResources()
 					.getString(R.string.init_official_message);
 			convs.createTime = System.currentTimeMillis();

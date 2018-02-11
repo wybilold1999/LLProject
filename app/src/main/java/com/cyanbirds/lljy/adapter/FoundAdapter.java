@@ -17,9 +17,7 @@ import com.cyanbirds.lljy.R;
 import com.cyanbirds.lljy.activity.PersonalInfoActivity;
 import com.cyanbirds.lljy.activity.PhotoViewActivity;
 import com.cyanbirds.lljy.config.ValueKey;
-import com.cyanbirds.lljy.entity.ClientUser;
 import com.cyanbirds.lljy.entity.PictureModel;
-import com.cyanbirds.lljy.utils.PreferencesUtils;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -38,14 +36,12 @@ public class FoundAdapter extends
 
     private List<PictureModel> pictureModels;
     private Context mContext;
-    private String mCurCity;
     private DecimalFormat mFormat;
 
     public FoundAdapter(List<PictureModel> pics, Context context) {
         this.pictureModels = pics;
         mContext = context;
         mFormat = new DecimalFormat("#.00");
-        mCurCity = PreferencesUtils.getCurrentCity(context);
     }
 
     @Override
@@ -80,11 +76,8 @@ public class FoundAdapter extends
             }
             viewHolder.portrait.setImageURI(Uri.parse(model.faceUrl));
             viewHolder.mUserName.setText(model.nickname);
-            if (!TextUtils.isEmpty(mCurCity) && null != model.distance && model.distance != 0.00) {
-                viewHolder.mFromCity.setVisibility(View.VISIBLE);
-                viewHolder.mDistanceLayout.setVisibility(View.GONE);
-                viewHolder.mFromCity.setText("来自" + mCurCity);
-            } else if (null == model.distance || model.distance == 0.00) {
+
+            if (!TextUtils.isEmpty(model.city)) {
                 viewHolder.mFromCity.setVisibility(View.VISIBLE);
                 viewHolder.mDistanceLayout.setVisibility(View.GONE);
                 viewHolder.mFromCity.setText("来自" + model.city);
@@ -93,6 +86,7 @@ public class FoundAdapter extends
                 viewHolder.mFromCity.setVisibility(View.GONE);
                 viewHolder.mDistance.setText(mFormat.format(model.distance) + " km");
             }
+
             viewHolder.imgQueue.setImageURI(Uri.parse(model.path));
         }
     }

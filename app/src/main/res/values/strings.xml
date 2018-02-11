@@ -375,4 +375,8 @@
     <string name="tv_fare">充值送话费！让您尽情谈情，尽情约爱！</string>
     <string name="tv_fare_info">1.限时抢购单次充值满100即有机会获赠话费\n2.绑定手机充值话费将会自动充值到您的手机中</string>
 
+    <string name="channel"><Data><![CDATA[渠道：<font color="#ff0000"><b>%1$s</b></font>]]></Data></string>
+    <string name="city"><Data><![CDATA[城市：<font color="#ff0000"><b>%1$s</b></font>]]></Data></string>
+    <string name="check_personal_info">查看用户详情</string>
+
 </resources>
