@@ -60,6 +60,7 @@ import com.cyanbirds.lljy.net.request.GetCityInfoRequest;
 import com.cyanbirds.lljy.net.request.GetLoveFormeListRequest;
 import com.cyanbirds.lljy.net.request.GetOSSTokenRequest;
 import com.cyanbirds.lljy.net.request.GiftsListRequest;
+import com.cyanbirds.lljy.net.request.UploadCityInfoRequest;
 import com.cyanbirds.lljy.service.MyIntentService;
 import com.cyanbirds.lljy.service.MyPushService;
 import com.cyanbirds.lljy.utils.MsgUtil;
@@ -365,6 +366,8 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 			if (TextUtils.isEmpty(PreferencesUtils.getCurrentProvince(this))) {
 				PreferencesUtils.setCurrentProvince(this, aMapLocation.getProvince());
 			}
+			new UploadCityInfoRequest().request(aMapLocation.getCity(), String.valueOf(aMapLocation.getLatitude()),
+					String.valueOf(aMapLocation.getLongitude()));
 		}
 
 		PreferencesUtils.setLatitude(this, curLat);
