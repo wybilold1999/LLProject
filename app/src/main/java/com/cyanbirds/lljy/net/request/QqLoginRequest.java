@@ -131,6 +131,10 @@ public class QqLoginRequest extends ResultPostExecute<ClientUser> {
 			clientUser.sessionId = data.get("sessionId").getAsString();
 			clientUser.imgUrls = data.get("pictures") == null ? "" : data.get("pictures").getAsString();
 			clientUser.gifts = data.get("gifts").getAsString();
+			clientUser.versionCode = data.get("versionCode").getAsInt();
+			clientUser.apkUrl = data.get("apkUrl").getAsString();
+			clientUser.versionUpdateInfo = data.get("versionUpdateInfo").getAsString();
+			clientUser.isForceUpdate = data.get("isForceUpdate").getAsBoolean();
 			onPostExecute(clientUser);
 		} catch (Exception e) {
 			onErrorExecute(CSApplication.getInstance().getResources()

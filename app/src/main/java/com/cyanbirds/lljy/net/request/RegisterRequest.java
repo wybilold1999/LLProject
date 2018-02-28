@@ -125,6 +125,10 @@ public class RegisterRequest extends ResultPostExecute<ClientUser> {
             clientUser.conception = data.get("conception").getAsString();
             clientUser.mobile = data.get("phone") == null ? "" : data.get("phone").getAsString();
             clientUser.sessionId = data.get("sessionId").getAsString();
+            clientUser.versionCode = data.get("versionCode").getAsInt();
+            clientUser.apkUrl = data.get("apkUrl").getAsString();
+            clientUser.versionUpdateInfo = data.get("versionUpdateInfo").getAsString();
+            clientUser.isForceUpdate = data.get("isForceUpdate").getAsBoolean();
             onPostExecute(clientUser);
         } catch (Exception e) {
             onErrorExecute(CSApplication.getInstance().getResources()

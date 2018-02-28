@@ -243,4 +243,12 @@ public interface UserService {
     @POST("memberOrders/outputMoney")
     Call<ResponseBody> outputMoney(@Header("token") String token, @FieldMap ArrayMap<String, String> params);
 
+    /**
+     * 获取返话费活动条件
+     * @param token
+     * @return
+     */
+    @GET("buy/getFareActivityInfo")
+    Call<ResponseBody> getFareActivityInfo(@Header("token") String token);
+
 }
