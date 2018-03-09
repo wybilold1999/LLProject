@@ -110,6 +110,7 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 	private LinearLayout mEmoticonPageIndicator;
 	private RecyclerView mEmoticonRecyclerview;
 	private SwipeRefreshLayout mSwipeRefresh;
+	private LinearLayout mInputWork;
 
 	private String mPhotoPath;
 	private File mPhotoFile;
@@ -215,24 +216,17 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 		mMorePageIndicator = (LinearLayout) findViewById(R.id.more_page_indicator);
 		mEmoticonPager = (ViewPager) findViewById(R.id.emoticon_pager);
 		mEmoticonPageIndicator = (LinearLayout) findViewById(R.id.emoticon_page_indicator);
+		mInputWork = (LinearLayout) findViewById(R.id.input_tool_work);
 
 		mEmoticonRecyclerview = (RecyclerView) findViewById(R.id.emoticon_recyclerview);
 		LinearLayoutManager layoutManager = new WrapperLinearLayoutManager(this);
 		layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 		mEmoticonRecyclerview.setLayoutManager(layoutManager);
 
-		if (!AppManager.getClientUser().isShowVip) {
-			openCamera.setVisibility(View.GONE);
-			openAlbums.setVisibility(View.GONE);
-			openLocation.setVisibility(View.GONE);
-			redPacket.setVisibility(View.GONE);
-			openEmotion.setVisibility(View.GONE);
+		if (AppManager.getClientUser().isShowVip) {
+			mInputWork.setVisibility(View.VISIBLE);
 		} else {
-			openCamera.setVisibility(View.VISIBLE);
-			openAlbums.setVisibility(View.VISIBLE);
-			openLocation.setVisibility(View.VISIBLE);
-			redPacket.setVisibility(View.VISIBLE);
-			openEmotion.setVisibility(View.VISIBLE);
+			mInputWork.setVisibility(View.GONE);
 		}
 	}
 
