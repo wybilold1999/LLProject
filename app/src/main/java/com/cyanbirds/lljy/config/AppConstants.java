@@ -27,8 +27,8 @@ public class AppConstants {
 	/**
 	 *容联云IM
 	 */
-	public static String YUNTONGXUN_ID = "8aaf07085a3c0ea1015a50eb26f708e6";
-	public static String YUNTONGXUN_TOKEN = "faa715a460bee3f3fde1437587cc9c9e";
+	public static String YUNTONGXUN_ID = "8a216da8620501f5016208c50e05021a";
+	public static String YUNTONGXUN_TOKEN = "76808b1cfce1f7bb27639097960b9c69";
 
 	/**
 	 * QQ登录的appid和appkey
