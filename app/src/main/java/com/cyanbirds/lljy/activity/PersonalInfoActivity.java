@@ -138,7 +138,7 @@ public class PersonalInfoActivity extends BaseActivity {
 				new GetUserInfoTask().request(curUserId);
 			}
 		}
-		if (AppManager.getClientUser().isShowLovers) {
+		if (AppManager.getClientUser().isShowVip) {
 			mGift.setVisibility(View.VISIBLE);
 		} else {
 			mGift.setVisibility(View.GONE);
