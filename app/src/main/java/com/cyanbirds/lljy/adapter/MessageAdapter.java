@@ -114,7 +114,7 @@ public class MessageAdapter extends
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
-            if (mConversations.size() > position) {
+            if (mConversations.size() > position && position != -1) {
                 Conversation conversation = mConversations.get(position);
                 conversation.unreadCount = 0;
                 mConversations.set(position, conversation);
