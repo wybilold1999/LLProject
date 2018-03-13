@@ -346,9 +346,13 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 		if (AppManager.getClientUser().isShowVip) {
 			mSocialCard.setVisibility(View.VISIBLE);
 			mSocialText.setVisibility(View.VISIBLE);
+			mGiftText.setVisibility(View.VISIBLE);
+			mGiftCard.setVisibility(View.VISIBLE);
 		} else {
 			mSocialCard.setVisibility(View.GONE);
 			mSocialText.setVisibility(View.GONE);
+			mGiftText.setVisibility(View.GONE);
+			mGiftCard.setVisibility(View.GONE);
 		}
 		if (!TextUtils.isEmpty(clientUser.purpose)) {
 			mPurpose.setText(clientUser.purpose);
