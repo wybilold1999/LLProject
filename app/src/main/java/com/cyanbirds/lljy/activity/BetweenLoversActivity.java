@@ -2,7 +2,6 @@ package com.cyanbirds.lljy.activity;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,7 +16,6 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.alipay.sdk.app.PayTask;
-import com.cyanbirds.lljy.CSApplication;
 import com.cyanbirds.lljy.R;
 import com.cyanbirds.lljy.activity.base.BaseActivity;
 import com.cyanbirds.lljy.adapter.BetweenLoversAdapter;
@@ -41,7 +39,6 @@ import com.cyanbirds.lljy.ui.widget.DividerItemDecoration;
 import com.cyanbirds.lljy.ui.widget.WrapperLinearLayoutManager;
 import com.cyanbirds.lljy.utils.DensityUtil;
 import com.cyanbirds.lljy.utils.ToastUtil;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.umeng.analytics.MobclickAgent;
 
@@ -62,12 +59,10 @@ import butterknife.ButterKnife;
  */
 public class BetweenLoversActivity extends BaseActivity {
 
-	@BindView(R.id.portrait)
-	SimpleDraweeView mPortrait;
 	@BindView(R.id.vip_recyclerview)
-	RecyclerView mVipRecyclerview;
+    RecyclerView mVipRecyclerview;
 	@BindView(R.id.love_recyclerview)
-	RecyclerView mLoveRecyclerview;
+    RecyclerView mLoveRecyclerview;
 	
 	private LoverMemberBuyAdapter mVipAdapter;
 	private LinearLayoutManager layoutManager;
@@ -119,7 +114,6 @@ public class BetweenLoversActivity extends BaseActivity {
 		if (toolbar != null) {
 			toolbar.setNavigationIcon(R.mipmap.ic_up);
 		}
-		mPortrait.setImageURI(Uri.parse("http://cdn.wmlover.cn/style/assets/wap/ID13/banner.jpg"));
 		setupView();
 		setupData();
 	}

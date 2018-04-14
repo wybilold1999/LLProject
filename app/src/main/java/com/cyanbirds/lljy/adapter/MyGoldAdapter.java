@@ -100,6 +100,9 @@ public class MyGoldAdapter extends
     }
     
     public MemberBuy getItem(int position){
+        if (position < 0) {
+            return null;
+        }
         return mMemberBuys == null ? null : mMemberBuys.get(position);
     }
     

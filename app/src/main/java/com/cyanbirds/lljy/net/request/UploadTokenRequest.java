@@ -1,7 +1,7 @@
 package com.cyanbirds.lljy.net.request;
 
-import com.cyanbirds.lljy.CSApplication;
-import com.cyanbirds.lljy.R;
+import android.support.v4.util.ArrayMap;
+
 import com.cyanbirds.lljy.manager.AppManager;
 import com.cyanbirds.lljy.net.base.ResultPostExecute;
 
@@ -15,25 +15,24 @@ import retrofit2.Callback;
  * @email 395044952@qq.com
  */
 public class UploadTokenRequest extends ResultPostExecute<String> {
-    public void request(final String gtClientId){
-        Call<ResponseBody> call = AppManager.getUserService().uploadToken(gtClientId, AppManager.getClientUser().sessionId);
+    public void request(String gtClientId, String xgToken){
+        ArrayMap<String, String> map = new ArrayMap<>();
+        map.put("gtClientId", gtClientId);
+        map.put("xgToken", xgToken);
+        Call<ResponseBody> call = AppManager.getUserService().uploadToken(map, AppManager.getClientUser().sessionId);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-                if(response.isSuccessful()){
-
-                } else {
-                    onErrorExecute(CSApplication.getInstance()
-                            .getResources()
-                            .getString(R.string.network_requests_error));
+                try {
+                    if (response.body() != null) {
+                        response.body().close();
+                    }
+                } catch (Exception e) {
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                onErrorExecute(CSApplication.getInstance()
-                        .getResources()
-                        .getString(R.string.network_requests_error));
             }
         });
     }
