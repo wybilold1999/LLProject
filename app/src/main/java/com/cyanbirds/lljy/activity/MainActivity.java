@@ -177,6 +177,8 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 					new FollowListTask().request("followFormeList", 1, 1);
 				}
 			}, 1500 * 10);
+		} else {
+			SDKCoreHelper.init(CSApplication.getInstance(), ECInitParams.LoginMode.FORCE_LOGIN);
 		}
 
 		if (AppManager.getClientUser().versionCode <= AppManager.getVersionCode() &&
