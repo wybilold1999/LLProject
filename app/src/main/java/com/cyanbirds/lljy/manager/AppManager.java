@@ -32,7 +32,10 @@ import com.cyanbirds.lljy.net.VideoService;
 import com.cyanbirds.lljy.utils.PreferencesUtils;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.util.List;
@@ -515,6 +518,29 @@ public class AppManager {
 	public static String getOSSFacePath() {
 		String path = "tan_love/img/tl_" + getUUID() + ".jpg";
 		return path;
+	}
+
+	public static String getProcessName(int pid) {
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader("/proc/" + pid + "/cmdline"));
+			String processName = reader.readLine();
+			if (!TextUtils.isEmpty(processName)) {
+				processName = processName.trim();
+			}
+			return processName;
+		} catch (Throwable throwable) {
+			throwable.printStackTrace();
+		} finally {
+			try {
+				if (reader != null) {
+					reader.close();
+				}
+			} catch (IOException exception) {
+				exception.printStackTrace();
+			}
+		}
+		return null;
 	}
 
 	/**
