@@ -148,9 +148,7 @@ public class SettingActivity extends BaseActivity {
                 }
                 break;
             case R.id.banding_phone_lay:
-                //0=注册1=找回密码2=验证绑定手机
-                intent.setClass(this, FindPwdActivity.class);
-                intent.putExtra(ValueKey.INPUT_PHONE_TYPE, 2);
+                intent.setClass(this, BandPhoneActivity.class);
                 startActivity(intent);
                 finish();
                 break;
