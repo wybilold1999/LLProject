@@ -76,9 +76,10 @@ public class CSApplication extends MultiDexApplication {
 
 				initFresco();
 
-				registerWeiXin();
 			}
 		});
+
+		registerWeiXin();
 		//初始化短信sdk
 		MobSDK.init(this);
 
