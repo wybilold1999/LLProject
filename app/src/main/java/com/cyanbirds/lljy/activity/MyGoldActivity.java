@@ -157,13 +157,6 @@ public class MyGoldActivity extends BaseActivity {
 		}
 		mMyGoldNum.setText(String.format(getResources().getString(R.string.my_gold_num), AppManager.getClientUser().gold_num));
 		new GetGoldListTask().request(BUY_GOLD);
-		
-		/**
-		 * 默认支付宝支付
-		 */
-		mPayType = AppConstants.ALI_PAY_PLATFORM;
-		mSelectAlipay.setChecked(true);
-		mSelectWechatpay.setChecked(false);
 	}
 	
 	@OnClick({R.id.btn_pay, R.id.select_alipay, R.id.alipay_lay, R.id.select_wechatpay, R.id.wechat_lay})
@@ -220,11 +213,31 @@ public class MyGoldActivity extends BaseActivity {
 			} else {
 				mAliPayInfo.setVisibility(View.GONE);
 			}
+			defaultPayWay();
 		}
 		
 		@Override
 		public void onErrorExecute(String error) {
 			ToastUtil.showMessage(error);
+		}
+	}
+
+	private void defaultPayWay() {
+		if (mMemberBuy.isShowAliPay && mMemberBuy.isShowWePay) {
+			mPayLay.setVisibility(View.VISIBLE);
+			mPayType = AppConstants.ALI_PAY_PLATFORM;
+			mSelectAlipay.setChecked(true);
+			mSelectWechatpay.setChecked(false);
+		} else if (mMemberBuy.isShowWePay) {
+			mPayLay.setVisibility(View.GONE);
+			mPayType = AppConstants.WX_PAY_PLATFORM;
+			mSelectWechatpay.setChecked(true);
+			mSelectAlipay.setChecked(false);
+		} else if (mMemberBuy.isShowAliPay) {
+			mPayLay.setVisibility(View.GONE);
+			mPayType = AppConstants.ALI_PAY_PLATFORM;
+			mSelectAlipay.setChecked(true);
+			mSelectWechatpay.setChecked(false);
 		}
 	}
 	
@@ -235,32 +248,6 @@ public class MyGoldActivity extends BaseActivity {
 			mMemberBuy = mAdapter.getItem(position);
 		}
 	};
-	
-	private void showPayDialog(final MemberBuy memberBuy) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(getResources().getString(R.string.pay_type));
-		builder.setNegativeButton(getResources().getString(R.string.cancel),
-				null);
-		builder.setItems(
-				new String[]{getResources().getString(R.string.ali_pay),
-						getResources().getString(R.string.weixin_pay)},
-				new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						switch (which) {
-							case 0:
-								new GetAliPayOrderInfoTask().request(memberBuy.id, AppConstants.ALI_PAY_PLATFORM);
-								break;
-							case 1:
-								new CreateOrderTask().request(memberBuy.id, AppConstants.WX_PAY_PLATFORM);
-								break;
-						}
-						dialog.dismiss();
-					}
-				});
-		builder.show();
-	}
 	
 	class CreateOrderTask extends CreateOrderRequest {
 		@Override

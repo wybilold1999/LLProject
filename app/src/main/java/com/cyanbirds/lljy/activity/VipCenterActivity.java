@@ -388,9 +388,19 @@ public class VipCenterActivity extends BaseActivity {
 		@Override
 		public void onItemClick(View view, int position) {
 			MemberBuy memberBuy = mAdapter.getItem(position);
-			showPayDialog(memberBuy);
+			choicePayWay(memberBuy);
 		}
 	};
+
+	private void choicePayWay(MemberBuy memberBuy) {
+		if (memberBuy.isShowAliPay && memberBuy.isShowWePay) {
+			showPayDialog(memberBuy);
+		} else if (memberBuy.isShowAliPay) {
+			new GetAliPayOrderInfoTask().request(memberBuy.id, AppConstants.ALI_PAY_PLATFORM);
+		} else if (memberBuy.isShowWePay) {
+			new CreateOrderTask().request(memberBuy.id, AppConstants.WX_PAY_PLATFORM);
+		}
+	}
 
 	private void showPayDialog(final MemberBuy memberBuy) {
 		mMemberBuy = memberBuy;
