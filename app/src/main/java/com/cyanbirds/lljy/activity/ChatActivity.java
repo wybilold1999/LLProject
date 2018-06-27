@@ -466,15 +466,11 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 				if (AppManager.getClientUser().isShowVip) {
 					if (!TextUtils.isEmpty(mContentInput.getText().toString())) {
 						if (AppManager.getClientUser().is_vip) {
-							if (AppManager.getClientUser().isShowGold && AppManager.getClientUser().gold_num  < 101) {
-								showGoldDialog();
-							} else {
-								if (null != IMChattingHelper.getInstance().getChatManager()) {
-									sendTextMsg();
-								}
+							if (null != IMChattingHelper.getInstance().getChatManager()) {
+								sendTextMsg();
 							}
 						} else {
-							showBeyondChatLimitDialog();
+							showVipDialog();
 						}
 					}
 				} else {
@@ -973,32 +969,6 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 				intent.setData(uri);
 				startActivityForResult(intent, REQUEST_PERMISSION_SETTING);
 
-			}
-		});
-		builder.show();
-	}
-
-	private void showBeyondChatLimitDialog() {
-		String message = "";
-		if (AppConstants.CHAT_LIMIT == 0) {
-			message = getResources().getString(R.string.un_send_msg);
-		} else {
-			message = getResources().getString(R.string.chat_count_zero_bak);
-		}
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(message);
-		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-				Intent intent = new Intent(ChatActivity.this, VipCenterActivity.class);
-				startActivity(intent);
-			}
-		});
-		builder.setNegativeButton(R.string.until_single, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
 			}
 		});
 		builder.show();

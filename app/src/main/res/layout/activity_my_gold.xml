@@ -11,6 +11,7 @@
         layout="@layout/toolbar_actionbar_with_headerbar"/>
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="9">
@@ -153,24 +154,26 @@
                         android:text="支付宝"/>
 
                     <ImageView
-                        android:id="@+id/iv_recommend"
+                        android:id="@+id/iv_ali_recommend"
                         android:layout_width="35dp"
                         android:layout_height="20dp"
                         android:layout_marginLeft="10dp"
                         android:layout_toRightOf="@id/tv_ali_pay"
                         android:layout_centerVertical="true"
                         android:scaleType="fitCenter"
-                        android:src="@mipmap/recommend"/>
+                        android:src="@mipmap/recommend"
+                        android:visibility="gone"/>
 
                     <TextView
                         android:id="@+id/alipay_lay_info"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_toRightOf="@id/iv_recommend"
+                        android:layout_toRightOf="@id/iv_ali_recommend"
                         android:layout_marginLeft="5dp"
                         android:textSize="10sp"
-                        android:text="@string/pay_info"/>
+                        android:text="@string/pay_info_ali"
+                        android:visibility="gone"/>
 
                     <CheckBox
                         android:id="@+id/select_alipay"
@@ -208,12 +211,35 @@
                         android:layout_marginLeft="10dp"/>
 
                     <TextView
+                        android:id="@+id/tv_wechat_pay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@id/iv_wechat_icon"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
                         android:text="微信支付"/>
+
+                    <ImageView
+                        android:id="@+id/iv_wechat_recommend"
+                        android:layout_width="35dp"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@id/tv_wechat_pay"
+                        android:layout_centerVertical="true"
+                        android:scaleType="fitCenter"
+                        android:src="@mipmap/recommend"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/wechat_pay_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@id/iv_wechat_recommend"
+                        android:layout_marginLeft="5dp"
+                        android:textSize="10sp"
+                        android:text="@string/pay_info_ali"
+                        android:visibility="gone"/>
 
                     <CheckBox
                         android:id="@+id/select_wechatpay"
