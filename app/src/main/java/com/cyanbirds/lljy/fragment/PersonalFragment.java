@@ -127,10 +127,10 @@ public class PersonalFragment extends Fragment {
 	RelativeLayout mMyVisitor;
 	@BindView(R.id.my_gifts)
 	RelativeLayout mMyGifts;
-	@BindView(R.id.money_card)
+	/*@BindView(R.id.money_card)
 	CardView mMoneyCard;
 	@BindView(R.id.money_lay)
-	RelativeLayout mMoneyLay;
+	RelativeLayout mMoneyLay;*/
 	/*@BindView(R.id.video_show_card)
 	CardView mVideoShowCard;
 	@BindView(R.id.video_show_lay)
@@ -248,11 +248,11 @@ public class PersonalFragment extends Fragment {
 			} else {
 				mLoversCard.setVisibility(View.GONE);
 			}
-			if (clientUser.isShowRpt) {
+			/*if (clientUser.isShowRpt) {
 				mMoneyCard.setVisibility(View.VISIBLE);
 			} else {
 				mMoneyCard.setVisibility(View.GONE);
-			}
+			}*/
 			/*if (clientUser.isShowVideo) {
 				mVideoShowCard.setVisibility(View.VISIBLE);
 			} else {
@@ -291,7 +291,7 @@ public class PersonalFragment extends Fragment {
 			R.id.attentioned_user, R.id.good_user, R.id.setting, R.id.about, R.id.my_gold,
 			/*R.id.download_layout,*/ R.id.lovers_lay, R.id.success_case,
 			R.id.near_party, R.id.identify_lay, R.id.my_visitor, R.id.my_gifts,
-			R.id.money_lay, /*R.id.video_show_lay,*/ R.id.my_appointment_lay})
+			/*R.id.money_lay, R.id.video_show_lay,*/ R.id.my_appointment_lay})
 	public void onClick(View view) {
 		Intent intent = new Intent();
 		switch (view.getId()) {
@@ -356,11 +356,11 @@ public class PersonalFragment extends Fragment {
 				intent.setClass(getActivity(), IdentifyActivity.class);
 				startActivity(intent);
 				break;
-			case R.id.money_lay:
+			/*case R.id.money_lay:
 				intent.setClass(getActivity(), MoneyPacketActivity.class);
 				startActivity(intent);
 				break;
-			/*case R.id.video_show_lay:
+			case R.id.video_show_lay:
 				intent.setClass(getActivity(), VideoListActivity.class);
 				startActivity(intent);
 				break;*/
