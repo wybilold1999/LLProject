@@ -109,8 +109,8 @@ public class PersonalFragment extends Fragment {
 	RelativeLayout mMyGold;
 	@BindView(R.id.portrait)
 	SimpleDraweeView mPortrait;
-	@BindView(R.id.download_layout)
-	RelativeLayout mDownloadlayout;
+	/*@BindView(R.id.download_layout)
+	RelativeLayout mDownloadlayout;*/
 	@BindView(R.id.lovers_card)
 	CardView mLoversCard;
 	@BindView(R.id.lovers_lay)
@@ -238,11 +238,11 @@ public class PersonalFragment extends Fragment {
 				mVipCard.setVisibility(View.GONE);
 				vipLay.setVisibility(View.GONE);
 			}
-			if (clientUser.isShowDownloadVip) {
+			/*if (clientUser.isShowDownloadVip) {
 				mDownloadlayout.setVisibility(View.VISIBLE);
 			} else {
 				mDownloadlayout.setVisibility(View.GONE);
-			}
+			}*/
 			if (clientUser.isShowLovers) {
 				mLoversCard.setVisibility(View.VISIBLE);
 			} else {
@@ -289,9 +289,9 @@ public class PersonalFragment extends Fragment {
 	@OnClick({
 			R.id.head_portrait_lay, R.id.vip_lay, R.id.my_attention,
 			R.id.attentioned_user, R.id.good_user, R.id.setting, R.id.about, R.id.my_gold,
-			R.id.download_layout, R.id.lovers_lay, R.id.success_case,
+			/*R.id.download_layout,*/ R.id.lovers_lay, R.id.success_case,
 			R.id.near_party, R.id.identify_lay, R.id.my_visitor, R.id.my_gifts,
-			R.id.money_lay, R.id.video_show_lay, R.id.my_appointment_lay})
+			R.id.money_lay, /*R.id.video_show_lay,*/ R.id.my_appointment_lay})
 	public void onClick(View view) {
 		Intent intent = new Intent();
 		switch (view.getId()) {
@@ -336,10 +336,10 @@ public class PersonalFragment extends Fragment {
 				intent.setClass(getActivity(), MyGoldActivity.class);
 				startActivity(intent);
 				break;
-			case R.id.download_layout:
+			/*case R.id.download_layout:
 				intent.setClass(getActivity(), MakeMoneyActivity.class);
 				startActivity(intent);
-				break;
+				break;*/
 			case R.id.lovers_lay:
 				intent.setClass(getActivity(), BetweenLoversActivity.class);
 				startActivity(intent);
@@ -360,10 +360,10 @@ public class PersonalFragment extends Fragment {
 				intent.setClass(getActivity(), MoneyPacketActivity.class);
 				startActivity(intent);
 				break;
-			case R.id.video_show_lay:
+			/*case R.id.video_show_lay:
 				intent.setClass(getActivity(), VideoListActivity.class);
 				startActivity(intent);
-				break;
+				break;*/
 			case R.id.my_appointment_lay:
 				intent.setClass(getActivity(), MyAppointmentActivity.class);
 				startActivity(intent);
@@ -399,11 +399,11 @@ public class PersonalFragment extends Fragment {
 				mVipCard.setVisibility(View.GONE);
 				vipLay.setVisibility(View.GONE);
 			}
-			if (clientUser.isShowDownloadVip) {
+			/*if (clientUser.isShowDownloadVip) {
 				mDownloadlayout.setVisibility(View.VISIBLE);
 			} else {
 				mDownloadlayout.setVisibility(View.GONE);
-			}
+			}*/
 			if (clientUser.isShowLovers) {
 				mLoversCard.setVisibility(View.VISIBLE);
 			} else {

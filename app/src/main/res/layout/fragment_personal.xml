@@ -736,7 +736,7 @@
                             android:contentDescription="@null"/>
                     </RelativeLayout>
 
-                    <RelativeLayout
+                    <!--<RelativeLayout
                         android:id="@+id/download_layout"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
@@ -783,7 +783,7 @@
                             android:layout_marginLeft="@dimen/divider_margin_left"
                             android:background="@color/divider_color"
                             android:contentDescription="@null"/>
-                    </RelativeLayout>
+                    </RelativeLayout>-->
 
                     <RelativeLayout
                         android:id="@+id/my_gold"

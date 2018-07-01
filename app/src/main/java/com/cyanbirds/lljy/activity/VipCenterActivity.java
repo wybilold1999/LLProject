@@ -201,7 +201,7 @@ public class VipCenterActivity extends BaseActivity {
 		new GetMemberBuyListTask().request(NORMAL_VIP);
 	}
 
-	@OnClick({R.id.vip_9_lay})
+	/*@OnClick({R.id.vip_9_lay})
 	public void onClick(View view) {
 		switch (view.getId()) {
 			case R.id.vip_9_lay:
@@ -209,7 +209,7 @@ public class VipCenterActivity extends BaseActivity {
 				startActivity(intent);
 				break;
 		}
-	}
+	}*/
 
 	/**
 	 * 获取用户名
@@ -412,7 +412,7 @@ public class VipCenterActivity extends BaseActivity {
 		String weChatPay = getResources().getString(R.string.weixin_pay);
 		if (memberBuy.isShowAli) {
 			aliPay = aliPay + "(推荐)";
-		} else {
+		} else if (memberBuy.isShowWe) {
 			weChatPay = weChatPay + "(推荐)";
 		}
 		builder.setItems(
