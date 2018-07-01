@@ -172,7 +172,7 @@
                 android:text="VIP会员特权"
                 android:gravity="center_vertical"/>
 
-            <RelativeLayout
+<!--            <RelativeLayout
                 android:id="@+id/vip_9_lay"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -223,7 +223,7 @@
                     android:layout_marginRight="@dimen/divider_margin_left"
                     android:background="@color/divider_color"
                     android:contentDescription="@null"/>
-            </RelativeLayout>
+            </RelativeLayout>-->
 
             <RelativeLayout
                 android:layout_width="match_parent"

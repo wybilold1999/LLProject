@@ -91,8 +91,8 @@ public class VipCenterActivity extends BaseActivity {
 	RelativeLayout mVip8Lay;
 	@BindView(R.id.scrollView)
     NestedScrollView mScrollView;
-	@BindView(R.id.vip_9_lay)
-	RelativeLayout mVip9Lay;
+//	@BindView(R.id.vip_9_lay)
+//	RelativeLayout mVip9Lay;
 	@BindView(R.id.pref_tel_fare_lay)
 	LinearLayout mPrefTelFareLay;
 	@BindView(R.id.name_list)
@@ -193,11 +193,11 @@ public class VipCenterActivity extends BaseActivity {
 			mVip7Lay.setVisibility(View.GONE);
 			mVip8Lay.setVisibility(View.GONE);
 		}
-		if (AppManager.getClientUser().isShowVideo) {
+		/*if (AppManager.getClientUser().isShowVideo) {
 			mVip9Lay.setVisibility(View.VISIBLE);
 		} else {
 			mVip9Lay.setVisibility(View.GONE);
-		}
+		}*/
 		new GetMemberBuyListTask().request(NORMAL_VIP);
 	}
 

@@ -243,7 +243,7 @@
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <!--<android.support.v7.widget.CardView
                 android:id="@+id/video_show_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -308,7 +308,7 @@
                     </RelativeLayout>
 
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </android.support.v7.widget.CardView>-->
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"

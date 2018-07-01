@@ -131,10 +131,10 @@ public class PersonalFragment extends Fragment {
 	CardView mMoneyCard;
 	@BindView(R.id.money_lay)
 	RelativeLayout mMoneyLay;
-	@BindView(R.id.video_show_card)
+	/*@BindView(R.id.video_show_card)
 	CardView mVideoShowCard;
 	@BindView(R.id.video_show_lay)
-	RelativeLayout mVideoShowLay;
+	RelativeLayout mVideoShowLay;*/
 	@BindView(R.id.my_appointment_lay)
 	RelativeLayout mAppointmentLay;
 
@@ -253,15 +253,20 @@ public class PersonalFragment extends Fragment {
 			} else {
 				mMoneyCard.setVisibility(View.GONE);
 			}
-			if (clientUser.isShowVideo) {
+			/*if (clientUser.isShowVideo) {
 				mVideoShowCard.setVisibility(View.VISIBLE);
 			} else {
 				mVideoShowCard.setVisibility(View.GONE);
-			}
+			}*/
 			if (clientUser.isShowAppointment) {
 				mAppointmentLay.setVisibility(View.VISIBLE);
 			} else {
 				mAppointmentLay.setVisibility(View.GONE);
+			}
+			if (clientUser.isShowGold) {
+				mMyGold.setVisibility(View.VISIBLE);
+			} else {
+				mMyGold.setVisibility(View.GONE);
 			}
 		}
 	}
@@ -404,11 +409,11 @@ public class PersonalFragment extends Fragment {
 			} else {
 				mLoversCard.setVisibility(View.GONE);
 			}
-			if (clientUser.isShowVideo) {
+			/*if (clientUser.isShowVideo) {
 				mVideoShowCard.setVisibility(View.VISIBLE);
 			} else {
 				mVideoShowCard.setVisibility(View.GONE);
-			}
+			}*/
 			if (clientUser.isShowAppointment) {
 				mAppointmentLay.setVisibility(View.VISIBLE);
 			} else {
