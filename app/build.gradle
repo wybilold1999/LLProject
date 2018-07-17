@@ -10,8 +10,8 @@ android {
         applicationId "com.cyanbirds.lljy"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 19
-        versionName "1.3.9"
+        versionCode 20
+        versionName "1.4.0"
         multiDexEnabled true
 
         manifestPlaceholders = [
@@ -162,7 +162,7 @@ dependencies {
     //信鸽jar
     compile 'com.tencent.xinge:xinge:3.2.2-release'
     //wup包
-    compile 'com.tencent.wup:wup:1.0.0.E-release'
+    compile 'com.tencent.wup:wup:1.0.0.E-alpha'
     //mid包
     compile 'com.tencent.mid:mid:4.0.6-release'
     compile 'com.tencent.bugly:crashreport:latest.release'
