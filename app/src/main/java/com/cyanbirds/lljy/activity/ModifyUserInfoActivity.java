@@ -225,11 +225,6 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 			currentFaceUrl = clientUser.face_url;
 			if (!TextUtils.isEmpty(clientUser.face_local) && new File(clientUser.face_local).exists()) {
 				mPortraitPhoto.setImageURI(Uri.parse("file://" + clientUser.face_local));
-			} else if (!TextUtils.isEmpty(clientUser.face_url)) {
-				mPortraitPhoto.setImageURI(Uri.parse(clientUser.face_url));
-				new DownloadPortraitTask().request(clientUser.face_url,
-						FileAccessorUtils.getImagePathName().getAbsolutePath(),
-						Md5Util.md5(AppManager.getClientUser().face_url) + ".jpg");
 			}
 			if (!TextUtils.isEmpty(clientUser.user_name)) {
 				mNickName.setText(clientUser.user_name);
